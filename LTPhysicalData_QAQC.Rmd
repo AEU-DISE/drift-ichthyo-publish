@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-##Edited ___ L.Vance for publishing update
+##Edited 8/2025 L.Vance for publishing update
 
 ```{r set-options, echo=FALSE, cache=FALSE}
 ```
@@ -156,8 +156,8 @@ PlotVars <- function(data,y) {
 ```{r load, results = FALSE, warning = FALSE, message = FALSE}
 
 phys <- read_csv("drift data/TblPhysicalDataAccess.csv")
-phys2 <- read_csv("drift data/DriftSampExcelData.csv", skip=1)
-WQ <- read_csv("drift data/LTWQ2020onward.csv", skip=1)
+phys2 <- read_csv("drift data/DriftSampExcelData_20250820.csv", skip=1)
+WQ <- read_csv("drift data/LTWQ2020onward_20250818.csv", skip=1)
 
 #get rid of NA in phys2 (data entry changed from Access to Excel in 2020), rename columns to be able to combine, clean up columns
 #Water quality separated from physical data in Excel
@@ -235,12 +235,14 @@ WQ2 <- WQ %>%
 phys3$Datetime <- mdy_hm(phys3$Datetime)
 phys3$Date<- mdy(phys3$Date)
 phys3$Time <- strptime(phys3$Time, format = "%H:%M", tz = "") %>%
-  strftime(phys3$Time, format = "%H:%M:%S", tz = "", usetz = FALSE)  
+  strftime(phys3$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs"))  
 
 WQ2$Datetime <- mdy_hm(WQ2$Datetime)
 WQ2$Date<- mdy(WQ2$Date)
 WQ2$Time <- strptime(WQ2$Time, format = "%H:%M", tz = "") %>%
-  strftime(WQ2$Time, format = "%H:%M:%S", tz = "", usetz = FALSE)
+  strftime(WQ2$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs"))     # use digits = getoption to function correctly
 
 #combine the physical data and water quality  from excel before joining to Access data
 combine <- left_join(WQ2, phys3)
@@ -253,7 +255,8 @@ str(combine)
 phys$Datetime <- mdy_hms(phys$Datetime)
 phys$Date<- mdy(phys$Date)
 phys$Time <- strptime(phys$Time, format = "%H:%M", tz = "") %>%
-  strftime(phys$Time, format = "%H:%M:%S", tz = "", usetz = FALSE) #add usetz = false to match phys3 and WQ
+  strftime(phys$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs")) #add usetz = false to match phys3 and WQ
 
 
 #rename some columns,filter to stations drift is collected 
@@ -323,7 +326,7 @@ yolo_phys$MonthAbb <-ordered(yolo_phys$MonthAbb,levels=c("Jan","Feb","Mar","Apr"
 
 
 #filter for ending Dec 2022
-phys_yolo <- filter(yolo_phys, year(Date) < 2023)
+phys_yolo <- filter(yolo_phys, year(Date) < 2025)
 
 
 
