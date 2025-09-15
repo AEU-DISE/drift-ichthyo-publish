@@ -547,6 +547,11 @@ LIS_WaterTemperature_ed <- LIS_WaterTemperature %>%
   filter(parameter_value<99998) %>%
   mutate(Temp_C = round((parameter_value-32)*5/9,1)) %>%
   rename(Temp_F = parameter_value)
+LIS_WaterTemperature_ed$Time <- hms::as_hms(LIS_WaterTemperature_ed$datetime)
+LIS_WaterTemperature_ed$Date <- as_date(LIS_WaterTemperature_ed$datetime)
+LIS_WaterTemperature_ed$Hour <- as.numeric(format(strptime(LIS_WaterTemperature_ed$Time, "%H:%M:%S"), "%H"))
+LIS_WaterTemperature_ed <- LIS_WaterTemperature_ed %>% 
+  filter(year(Date) >2012)
 LIS_DO_ed <- LIS_DO %>%
   select(3,5) %>%
   rename(DO = parameter_value)
@@ -564,7 +569,8 @@ LIS_EC_ed <- LIS_EC%>%
 a <- merge(LIS_DO_ed, LIS_Turb_ed, by = "datetime")
 b <- merge(a, LIS_EC_ed, by = "datetime")
 c <- merge(b, LIS_pH_ed, by = "datetime")
-LIS_WQ <- left_join(LIS_WaterTemperature_ed, c, by = "datetime")
+LIS_WQ <- left_join(LIS_WaterTemperature_ed, c, by = "datetime") %>% 
+  filter(!is.na(datetime))
 
 # str(LIS_WQ)
 LIS_WQ$Time <- hms::as_hms(LIS_WQ$datetime)
@@ -580,7 +586,7 @@ LIS_WQ_f <- LIS_WQ %>%
   filter(pH>0 & pH<14)%>%
   filter(Turbidity >0) %>%
   mutate(StationCode="LIS_RT") %>%
-  select(1,3:7,9,11)
+  select(1,3:10)
 
 # Make plots
 Temp <- ggplot(LIS_WQ_f, aes(datetime, WaterTemperature)) + geom_point() + theme_bw()
@@ -595,8 +601,9 @@ Yolo_WQ <- phys_yolo %>%
   select(c(Datetime, WaterTemperature, DO, Turbidity, Conductivity, pH, Date, Station))
 
 LIS_WQ_f_ed <- LIS_WQ_f %>%
-  rename(Datetime = "datetime",
-         Station = "StationCode")
+  rename(Datetime = "datetime") %>% 
+  mutate(Station = "LIS") %>% 
+  select(-c(Time, Hour))
 
 WQ_large <- rbind(LIS_WQ_f_ed, Yolo_WQ)
 WQ_large$Year <- as.numeric(year(WQ_large$Date))
@@ -694,7 +701,7 @@ turb <- c(680, 656, 885, 668, 841, 1187)
 cond <- c(748, 926, 1847, "STTD_2021-10-13 11:07:00")
 spc <- c(1140, 1139, 1847, 899, 1087, "STTD_2021-10-13 11:07:00")
 sec <- c(708, 1090)
-do <- c(1409, 1314, 1218, "STTD_2022-02-07 10:17:00", "STTD_2022-03-14 09:27:00")
+do <- c(1409, 1314, 1218, "STTD_2022-02-07 10:17:00", "STTD_2022-03-14 09:27:00", "STTD_2024-18-11 09:55:00")
 ph <- c(1501, "SHR_2022-04-26 08:55:00")
 
 # Adding Flag and Comment variables
@@ -750,13 +757,16 @@ grid.arrange(p.temp, p.ec, p.spc, p.secchi, p.turb, p.do, p.pH, ncol = 2)
 ```{r Write file, message = FALSE, warning = FALSE}
 #section not used this round of publishing
 # Replace blanks with NA
-# empty_as_na <- function(x){
-#     if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
-#     ifelse(as.character(x)!="", x, NA)
-# }
-# 
+empty_as_na <- function(x){
+    if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
+    ifelse(as.character(x)!="", x, NA)
+}
+#old code deprecated, see new version below
 # phys_yolo_flag <- phys_yolo_flag %>%
 #   mutate_each(list(empty_as_na),5:20)
+
+phys_yolo_flag <- phys_yolo_flag %>%
+  mutate(across(.cols = 5:29 & where(is.character), .fns = ~na_if(., "")))
 
 
 ```
