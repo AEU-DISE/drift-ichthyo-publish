@@ -1,0 +1,182 @@
+---
+title: "Drift QAQC update"
+author: "Lisa Vance"
+date: "2026-04-27"
+output: html_document
+---
+
+YBFMP Drift Invertebrate Data 1998 - 2024
+## modified 4/2026 by L.Vance from previous markdown file for publishing update
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width = 10000)
+```
+
+## Setup
+
+1. Set up and download libraries
+
+```{r setup, results=FALSE, warning = FALSE, message = FALSE}
+rm(list=ls(all=TRUE))
+
+library(tidyverse)
+library(gridExtra) # combine plots
+library(stringr)
+library(readr)
+library(lubridate)
+library(plotly)
+library(viridis)
+library(kableExtra)
+library(tidylog)
+```
+
+2. Load data and check variable types
+
+```{r load, results = FALSE, warning = FALSE, message = FALSE}
+# Load data - several tables
+phys <- read_csv("drift data/LT_phys_qc_20260429.csv")
+catch <- read_csv("drift data/Drift_Catch_20260429.csv", skip=1)
+catch2 <- read_csv("drift data/Drift_20231030-20241231.csv")
+samp <- read_csv("drift data/DriftSampExcelData_20260429.csv", skip=1)
+tax <- read_csv("drift data/DriftTaxonomy.csv")
+wy <- read_csv("WaterYearType_CDEC.csv") 
+inundation <- read_csv("Yolo_Bypass_Inundation_1998-2024.csv")
+
+```
+
+
+3. Rename columns, clean up, merge contractor data and Excel data
+```{r}
+catch3 <- catch %>%
+  filter(!(is.na(`Measuring program short name`))) %>%
+  rename(Count = `Value...11`,
+         LifeStage = `Value...12`,
+         TaxonName = Observable,
+         Date = `Sampling Event Date`,
+         Time = `Sampling Event Time`,
+         Station = `Sampling Area Number`,
+         SAMCode = `Sampling Event Number`,
+         SampleID = `Sample ID`,
+         LabComments = lab_comments) %>%
+  select(-c(`Measuring program short name`, `Observation Type Short Name`,
+            SAMCode))
+
+catch4 <- catch2 %>% 
+  rename(Program = measuring_program,
+         Date = date_col,
+         Time = time,
+         Station = station,
+         SampleID = sample_id,
+         Attribute = attribute,
+         TaxonName = observable,
+         Category = category,
+         Count = count,
+         LifeStage = life_stage,
+         LabComments = lab_comments) %>% 
+  select(-c(Program, sam_code, short_name))
+
+#check df structure
+str(phys)
+str(catch3)
+str(catch4)
+str(samp)
+
+#make date columns the same format before binding, filter out 2022 and older
+catch3$Date <- mdy(catch3$Date)
+catch4$Date <- ymd(catch4$Date)
+
+catch3 <- catch3 %>% 
+  filter(year(Date)>2022)
+
+catchdrift <- bind_rows(catch3, catch4)
+
+
+samp2 <- samp %>%
+  filter(!(is.na(`Measuring program short name`))) %>%
+  rename(FlowMeterStart = `Flow Meter Start`,
+         FlowMeterEnd = `Flow Meter End`,
+         Date = `Sampling Event Date`,
+         Time = `Sampling Event Time`,
+         Station = `Sampling Area Number`,
+         SAMCode = `Sampling Event Number`,
+         MeshSize = `Observation Area Name`,
+         SampleAltered = `Sampling Altered`,
+         ConditionCode = `Condition Code`,
+         SetTime = `Set Time`,
+         FlowMeterSpeed = `Flow Meter Speed`, 
+         FieldComments = `Field Comments`,
+         SlideCount = `Slide Count`,
+         SampleVolume = `Sample Volume`,
+         SubsampleNumber = `Subsample Number`,
+         DilutionVolume = `Dilution Volume`,
+         PhysicalDataID = `Physical Data ID`) %>%
+  select(-c(`Observation Area Number`, `Spot Code (original/duplicate)`, `...27`, `...28`,
+            `...29`, `...30`, `...31`, `...32`,
+            `Spot Number`, `Flow Meter Start (50)`, `Flow Meter End (50)`,
+            `Entered by`, `QAQC'd by`, `...6`, `Measuring program short name`,
+            SAMCode))
+
+
+```
+
+
+4. Adjust date/time formats, create datetime column for ease of organizing and QA/QC
+```{r}
+#phys looks like it's in the correct format already post qa/qc
+
+
+catchdrift$Year <- year(catchdrift$Date)
+catchdrift$Month <- month(catchdrift$Date)
+mymonths <- c("Jan","Feb","Mar",
+              "Apr","May","Jun",
+              "Jul","Aug","Sep",
+              "Oct","Nov","Dec")
+catchdrift$MonthAbb <- mymonths[catchdrift$Month ]
+catchdrift$Datetime = paste(catchdrift$Date, catchdrift$Time)
+catchdrift$Datetime <- ymd_hms(catchdrift$Datetime)
+catchdrift$Time <- hms::as_hms(catchdrift$Time)
+
+str(samp2)
+
+samp2$Date<-mdy(samp2$Date)
+samp2$Year <- year(samp2$Date)
+samp2$Month <- month(samp2$Date)
+mymonths <- c("Jan","Feb","Mar",
+              "Apr","May","Jun",
+              "Jul","Aug","Sep",
+              "Oct","Nov","Dec")
+samp2$MonthAbb <- mymonths[samp2$Month ]
+samp2$Datetime = paste(samp2$Date, samp2$Time)
+samp2$Datetime <- ymd_hms(samp2$Datetime)
+samp2$Time <- hms::as_hms(samp2$Time)
+
+samp2 <- samp2 %>% 
+  filter(year(Date)>2022 & year(Date) < 2025)
+
+inundation <- inundation %>%
+  rename(Date = Dates)
+inundation$Date<-ymd(inundation$Date)
+
+#check data types again
+str(phys)
+str(catch)
+str(samp)
+str(samp2)
+str(catch2)
+str(inundation)
+
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+

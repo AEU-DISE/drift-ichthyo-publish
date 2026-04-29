@@ -1,168 +1,119 @@
----
-title: "LTPhysicalData_QAQC"
-author: "Catarina Pien"
-date: "April 6 2020"
-output: html_document
-editor_options: 
-  chunk_output_type: console
----
-
-##Edited 8/2025 L.Vance for publishing update
-
-```{r set-options, echo=FALSE, cache=FALSE}
-```
-
-
-```{r set-options, echo=FALSE, cache=FALSE}
-options(fig.width = 12)
-rm(list=ls(all=TRUE))
-```
-
-## 1.Setup and Download libraries
-
-```{r setup, results=FALSE, warning = FALSE, message = FALSE}
-
-rm(list=ls(all=TRUE))
-
-if(!require(tidyverse)) {install.packages("tidyverse")
-  library(tidyverse)}
-if(!require(lubridate)) {install.packages("lubridate")
-  library(lubridate)}
-if(!require(gridExtra)) {install.packages("gridExtra")
-  library(gridExtra)}
-if(!require(kableExtra)) {install.packages("kableExtra")
-  library(kableExtra)}
-if(!require(knitr)) {install.packages("knitr")
-  library(knitr)}
-if(!require(tidylog)) {install.packages("tidylog")
-  library(tidylog)}
-if(!require(plotly)) {install.packages("plotly")
-  library(plotly)}
-
-```
-
-
-## 2. Plotting functions
-
-```{r plotfunctions}
+library(tidyverse)
+library(lubridate)
+library(gridExtra)
+library(kableExtra)
+library(knitr)
+library(tidylog)
+library(plotly)
 
 # Yearly boxplot, y = variable of interest
 Yearbox <-  function(data,y) {
-    y <- enquo(y)
+  y <- enquo(y)
   data %>%
     ggplot() +
     geom_boxplot(mapping = aes(Year,!! y,fill = Station)) +
     theme_bw() +
-  scale_fill_manual(values = c("coral3", "lightseagreen"))+
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(colour = "black"),
-        plot.title = element_text(hjust=0.5),
-        axis.text = element_text(size = 11), 
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 11),
-        legend.position = "bottom")
+    scale_fill_manual(values = c("coral3", "lightseagreen"))+
+    theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black"),
+          plot.title = element_text(hjust=0.5),
+          axis.text = element_text(size = 11), 
+          axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 11),
+          legend.position = "bottom")
 }
 
 # Monthly boxplot, y = variable of interest
 Monthbox <-  function(data,y) {
-    y <- enquo(y)
+  y <- enquo(y)
   data %>%
     ggplot() +
     geom_boxplot(mapping = aes(MonthAbb,!! y,fill = Station)) +
     theme_bw() +
-  scale_fill_manual(values = c("coral3", "lightseagreen"))+
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(colour = "black"),
-        plot.title = element_text(hjust=0.5),
-        axis.text = element_text(size = 11), 
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 11),
-        legend.position = "bottom")
+    scale_fill_manual(values = c("coral3", "lightseagreen"))+
+    theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black"),
+          plot.title = element_text(hjust=0.5),
+          axis.text = element_text(size = 11), 
+          axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 11),
+          legend.position = "bottom")
 }
 
 # Point plot by date. Y = Variable of interest
 VisPoint <-  function(data,y) {
-    y <- enquo(y)
+  y <- enquo(y)
   data %>%
     ggplot() +
     geom_point(mapping = aes(Datetime,!! y,col = Station), size = 2) +
     theme_bw() +
-  scale_colour_manual(values = c("coral3", "lightseagreen"))+
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(colour = "black"),
-        plot.title = element_text(hjust=0.5),
-        axis.text = element_text(size = 11), 
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 11),
-        legend.position = "bottom")
+    scale_colour_manual(values = c("coral3", "lightseagreen"))+
+    theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black"),
+          plot.title = element_text(hjust=0.5),
+          axis.text = element_text(size = 11), 
+          axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 11),
+          legend.position = "bottom")
 } 
 
 # Histogram by Station, y = variable of interest, binwidth
 VisHist <-  function(data,y, bin) {
-    y <- enquo(y)
+  y <- enquo(y)
   data %>%
     ggplot() +
     geom_histogram(mapping = aes(!! y,col = Station),binwidth = bin, fill = "lightseagreen", colour = "lightgray") +
     facet_wrap(~Station, scales = "free_x") +
     theme_bw() +
-  scale_colour_manual(values = c("coral3", "lightseagreen"))+
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(colour = "black"),
-        plot.title = element_text(hjust=0.5),
-        axis.text = element_text(size = 11), 
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 11))
+    scale_colour_manual(values = c("coral3", "lightseagreen"))+
+    theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black"),
+          plot.title = element_text(hjust=0.5),
+          axis.text = element_text(size = 11), 
+          axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 11))
 } 
 
 # Plot date vs. variable of interest, specifically for Lisbon
 PlotVars <- function(data,y) {
-    y <- enquo(y)
+  y <- enquo(y)
   data %>%
     ggplot() +
     geom_point(mapping = aes(Datetime,!! y, col = Station)) +
     theme_bw() +
-  scale_colour_manual(values = c("#F3B2FF", "#106E83", "#FFC971", "#BAFF87")) + 
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(colour = "black"),
-        plot.title = element_text(hjust=0.5),
-        axis.text = element_text(size = 11), 
-        axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 11))
-  }
-```
+    scale_colour_manual(values = c("#F3B2FF", "#106E83", "#FFC971", "#BAFF87")) + 
+    theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black"),
+          plot.title = element_text(hjust=0.5),
+          axis.text = element_text(size = 11), 
+          axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 11))
+}
 
+#read in most recent physical and water quality data from excel to merge with previous years qc'd data
+phys <- read_csv("drift data/DriftSampExcelData_20260429.csv", skip=1)
+WQ <- read_csv("drift data/LTWQ2020onward_20260429.csv", skip=1)
 
-## 3.Load Data, Check Variable Types
-
-```{r load, results = FALSE, warning = FALSE, message = FALSE}
-
-phys <- read_csv("drift data/TblPhysicalDataAccess.csv")
-phys2 <- read_csv("drift data/DriftSampExcelData_20250820.csv", skip=1)
-WQ <- read_csv("drift data/LTWQ2020onward_20250818.csv", skip=1)
-
-#get rid of NA in phys2 (data entry changed from Access to Excel in 2020), rename columns to be able to combine, clean up columns
-#Water quality separated from physical data in Excel
-
-phys3 <- phys2 %>%
+phys2 <- phys %>%
   filter(!is.na(`Measuring program short name`)) %>%
   rename(Program = 'Measuring program short name',
          Date = 'Sampling Event Date',
@@ -203,7 +154,6 @@ WQ <- WQ %>%
          Date = 'WDL SAM_COLLECTION_DATE',
          Time = 'Collection Time',
          Station = 'Station Name',
-         StationNumber = 'Station Number',
          SamplingNumber = 'Sampling Number (event)',
          WaterTemperature = 'water.temp',
          SpCnd = 'sp.cond',
@@ -211,34 +161,29 @@ WQ <- WQ %>%
          Turbidity = 'turb',
          Secchi = secchi,
          Conductivity = EC,
-         SampleDate = `Sample Date`,
-         SampleTime = `Sample Time`,
-         SampleNumber = `Sample Number`,
          MicrocystisVisualRank = microcyst,
          VegetationRank = VegRank) %>%
   select(-c('Run Number', 'Run Name', LabOrField, Recorder, `Field Check`, FieldChecker, Crew, 
             LightData, DriftData, LarvalData, `150_ZoopsData`, `50_ZoopsData`,
             PhytoData, ChlData, NutrData, EnteredBy, QAQCBy, SurfaceIrr,
             Depth1Irr, Depth2Irr, Depth3Irr, Depth4Irr, SubIrr1, SubIrr2, SubIrr3,
-            SubIrr4, SampleNumber, SampleDate, SampleTime, SamplingNumber, StationNumber, Program))
+            SubIrr4, SamplingNumber, Program))
 
-# Add and change date and time formats
-phys <- phys %>% mutate(Datetime = paste(Date, Time, sep = " "))
-phys3 <- phys3 %>% mutate(Datetime = paste(Date, Time, sep = " "))
+phys3 <- phys2 %>% mutate(Datetime = paste(Date, Time, sep = " "))
 WQ <- WQ %>% mutate(Datetime = paste(Date, Time, sep = ""))
 
-#filter WQ to stations where drift is collected
+#filter stations only for ybfmp lt (where drift is collected)
 WQ2 <- WQ %>%
   filter(Station == "STTD" | Station == "SHR")
 
 #additional date time format changes
-phys3$Datetime <- mdy_hm(phys3$Datetime)
+phys3$Datetime <- mdy_hms(phys3$Datetime)
 phys3$Date<- mdy(phys3$Date)
 phys3$Time <- strptime(phys3$Time, format = "%H:%M", tz = "") %>%
   strftime(phys3$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
            digits = getOption("digits.secs"))  
 
-WQ2$Datetime <- mdy_hm(WQ2$Datetime)
+WQ2$Datetime <- mdy_hms(WQ2$Datetime)
 WQ2$Date<- mdy(WQ2$Date)
 WQ2$Time <- strptime(WQ2$Time, format = "%H:%M", tz = "") %>%
   strftime(WQ2$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
@@ -246,34 +191,6 @@ WQ2$Time <- strptime(WQ2$Time, format = "%H:%M", tz = "") %>%
 
 #combine the physical data and water quality  from excel before joining to Access data
 combine <- left_join(WQ2, phys3)
-
-#check column formats before joining access data and excel data
-str(phys)
-str(combine)
-
-#configure date time columns before combining
-phys$Datetime <- mdy_hms(phys$Datetime)
-phys$Date<- mdy(phys$Date)
-phys$Time <- strptime(phys$Time, format = "%H:%M", tz = "") %>%
-  strftime(phys$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
-           digits = getOption("digits.secs")) #add usetz = false to match phys3 and WQ
-
-
-#rename some columns,filter to stations drift is collected 
-phys.s <- phys %>%
-  rename(Secchi = SecchiDiskDepth,
-         Station = `Station Code`,
-         Conductivity = EC,
-         YSI = `YSI #`) %>%
-  select(-c(Recorder, `Field Check`, Crew, EnteredBy, "QA/QC'dBy",  
-            LightData, DriftData, LarvalData, ZoopsData, `50_ZoopsData`, ChlData, PhytoData, NutrData,
-            Comments, DataCorrectionComments, StartMeter, EndMeter, MeterSetTime)) %>%
-  mutate(event_id = paste0(Station, "_", Datetime)) %>%
-  filter(Station == "SHR" | Station == "STTD")
-
-#check column formats again before joining access data and excel data
-str(phys.s)
-str(combine)
 
 #match column types for combining access and excel data together
 #filter out dates that were for NDFS only and no drift were collected
@@ -290,20 +207,12 @@ combine2 <- combine %>%
          YSI = as.numeric(YSI),
          FlowMeterEnd = as.numeric(FlowMeterEnd)) %>%
   mutate(event_id = paste0(Station, "_", Datetime)) %>%
-  filter(!(Date == "2020-07-13" | Date == "2020-07-27" | Date == "2020-08-10"))
+  filter(!(Date == "2020-07-13" | Date == "2020-07-27" | Date == "2020-08-10")) %>% 
+  filter(!(year(Date) == 2020) & !(year(Date) == 2021) & !(year(Date) == 2022))
 
-#ensure column types match, then create full file
-str(phys.s)
-str(combine2)
-
-yolo_phys <-bind_rows(phys.s, combine2) %>%
+#move eventID         
+yolo_phys <- combine2 %>% 
   relocate(event_id)
-
-
-```
-
-## 4.Check variables to include in QC, reorganize the data frame.
-```{r filter, results = FALSE, message = FALSE, warning = FALSE}
 
 summary(yolo_phys$PhysicalDataID)
 unique(yolo_phys$Station)
@@ -325,17 +234,9 @@ yolo_phys$MonthAbb <- mymonths[yolo_phys$Month ]
 yolo_phys$MonthAbb <-ordered(yolo_phys$MonthAbb,levels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
 
 
-#filter for ending Dec 2022
+#filter for ending Dec 2024
 phys_yolo <- filter(yolo_phys, year(Date) < 2025) %>% 
   relocate(Turbidity, .after = pH)
-
-
-
-```
-
-## 5.Look at observations in stations
-
-```{r Stations, message = FALSE, warning = FALSE}
 
 # summarize number of observations per year
 sta.sum <- phys_yolo %>%
@@ -357,9 +258,9 @@ ggplot(sta.sum, aes(Year, n, fill = Station)) + geom_bar(stat = "identity") +the
 
 # plot number of observations per year
 ggplot(sta.sum, aes(Station, n, fill = Year)) + geom_bar(stat = "identity") +
-    scale_y_continuous(breaks = seq(0,600,50))+
-    theme_bw()+
-    theme(panel.grid.major = element_blank(),
+  scale_y_continuous(breaks = seq(0,600,50))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.line = element_line(colour = "black"),
@@ -369,12 +270,6 @@ ggplot(sta.sum, aes(Station, n, fill = Year)) + geom_bar(stat = "identity") +
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 11))
 
-```
-
-
-## 6.Overview of Physical Data (All stations)
-
-```{r WQ Plot, message = FALSE, warning = FALSE}
 
 p.temp <- ggplot(phys_yolo, aes(Date, WaterTemperature)) + geom_point() + labs(y = "Water Temp(C)") +
   theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
@@ -394,12 +289,7 @@ p.turb <- ggplot(phys_yolo, aes(Date, Turbidity)) + geom_point() + labs(y = "Tur
 # Arrange plots together
 grid.arrange(p.temp, p.ec, p.spc, p.secchi, p.turb, p.do, p.pH)
 
-```
 
-
-## 7.Summary Tables - Min and max of variables by station
-
-```{r minmaxtables, message = FALSE, warning = FALSE}
 # All database data
 WQ.overall <- phys_yolo %>%
   group_by(Station) %>%
@@ -422,12 +312,6 @@ WQ.overall <- phys_yolo %>%
 kable(t(WQ.overall)) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
-```
-
-
-##8. Plots - Yolo
-
-```{r Yolo temperature plots, warning = FALSE, message = FALSE}
 Yearbox(phys_yolo, WaterTemperature)
 Monthbox(phys_yolo,WaterTemperature)
 VisPoint(phys_yolo,WaterTemperature)
@@ -464,11 +348,6 @@ Monthbox(phys_yolo,pH)
 VisPoint(phys_yolo,pH)
 VisHist(phys_yolo, pH, 1)
 
-```
-
-
-##9. Correlation Plots: TurbidityxSecchi, DOxTemp, ConductivityxSpCnd
-```{r Correlations, message = FALSE, warning = FALSE}
 sec.tur <- ggplot(phys_yolo, aes(x=Turbidity, y = Secchi)) + geom_point() + geom_smooth() +
   labs(title = "Secchi x Turbidity", x = "Turbidity (NTU)", y = "Secchi Depth (m)")+
   theme_bw() + 
@@ -481,6 +360,7 @@ sec.tur <- ggplot(phys_yolo, aes(x=Turbidity, y = Secchi)) + geom_point() + geom
         axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 11))
+ggplotly(sec.tur)
 
 do.temp <- ggplot(phys_yolo, aes(x=WaterTemperature, y = DO)) + geom_point() + geom_smooth() +
   labs(title = "DO x Temp", x = "Water Temp (C)", y = "DO (mg/L)")+
@@ -494,6 +374,7 @@ do.temp <- ggplot(phys_yolo, aes(x=WaterTemperature, y = DO)) + geom_point() + g
         axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 11))
+ggplotly(do.temp)
 
 ec.spc <- ggplot(phys_yolo, aes(x= SpCnd, y = Conductivity )) + geom_point() + geom_smooth() +
   #labs(title = "Conductivity x SpCnd", x = "SpCnd (usiemens/cm)", y = "Conductivity (usiemens/cm)")+
@@ -507,6 +388,7 @@ ec.spc <- ggplot(phys_yolo, aes(x= SpCnd, y = Conductivity )) + geom_point() + g
         axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 11))
+ggplotly(ec.spc)
 
 spc.ec <- ggplot(phys_yolo, aes(x=Conductivity, y = SpCnd)) + geom_point() + geom_smooth() +
   labs(title = "SpCnd x Conductivity", x = "Conductivity (usiemens/cm)", y = "SpCnd (usiemens/cm)")+
@@ -520,19 +402,17 @@ spc.ec <- ggplot(phys_yolo, aes(x=Conductivity, y = SpCnd)) + geom_point() + geo
         axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 11))
+ggplotly(spc.ec)
 
 grid.arrange(sec.tur, do.temp, spc.ec, ec.spc)
-```
 
 
-## 10. Check against Lisbon data, this part can be slow
-```{r Lisbon Check Yolo, message = FALSE, warning = FALSE}
 #Sensors
-  #Water Temp in F =25  (2008)
-  #DO= 61  (2013)
-  #Conductivity = 100  (2013)
-  #pH =62   (2013)
-  #Turbidity =221  (2013)
+#Water Temp in F =25  (2008)
+#DO= 61  (2013)
+#Conductivity = 100  (2013)
+#pH =62   (2013)
+#Turbidity =221  (2013)
 
 # Read files (came from cdec4gov) (see download cdec lis sensor data rmd)
 LIS_WaterTemperature <- read_csv("drift data/STA/LIS_25.csv")
@@ -617,11 +497,8 @@ WQ_sub3 <- WQ_large %>%
   filter(Year>2010)
 WQ_sub4 <- WQ_large %>%
   filter(Year>2019)
-
-```
-
-## 11. Plots with Lisbon-Yolo data
-```{r Plots for LIS_Yolo, echo = FALSE, warning = FALSE, message = FALSE}
+WQ_sub4 <- WQ_large %>%
+  filter(Year>2022)
 
 WaterTemp <- PlotVars(WQ_large, WaterTemperature)
 WQCond <- PlotVars(WQ_large, Conductivity)
@@ -634,61 +511,11 @@ ggplotly(WQCond)
 ggplotly(WQDO)
 ggplotly(WQpH)
 ggplotly(WQTurb)
-```
 
 
-## 12. QC data
-```{r QC, warning = FALSE, message = FALSE}
-# Edits to data
-to_drop <- c(1575, 1631, 1632, 1722, 1724, 1867, 1308, 748)
+# phys_yolo <- phys_yolo %>%
+#   filter(SpCnd>1500)
 
-# To change
-phys_yolo$WaterTemperature[phys_yolo$PhysicalDataID == 688] <- 16.7 # Was Fahrenheit
-phys_yolo$WaterTemperature[phys_yolo$WaterTemperature == 0.169] <- 16.9 # Decimal place
-phys_yolo$Turbidity[phys_yolo$PhysicalDataID==680] <- 15.4 # Typo
-phys_yolo$Turbidity[phys_yolo$PhysicalDataID==656] <- 94.2 # Typo
-phys_yolo$Conductivity[phys_yolo$PhysicalDataID==748] <- 732 # Typo
-phys_yolo$Conductivity[phys_yolo$PhysicalDataID==926] <- 1284 # Typo
-phys_yolo$Conductivity[phys_yolo$PhysicalDataID==1847] <- 170 # Typo
-phys_yolo$SpCnd[phys_yolo$PhysicalDataID==1140] <- 848 # Typo
-phys_yolo$SpCnd[phys_yolo$PhysicalDataID==1139] <- 889 # Typo
-phys_yolo$SpCnd[phys_yolo$PhysicalDataID==1847] <- 101 # Typo
-phys_yolo$Secchi[phys_yolo$PhysicalDataID==708] <- NA # Previously 0, but actually was not taken
-phys_yolo$Secchi[phys_yolo$PhysicalDataID==708] <- NA # Previously 0, but actually was not taken
-phys_yolo$DO[phys_yolo$PhysicalDataID==1409] <- NA # Previously 0, but actually was not taken
-phys_yolo$pH[phys_yolo$PhysicalDataID==1501] <- 7.92 # Typo
-
-
-# One entry was not entered
-phys_yolo$Station[phys_yolo$PhysicalDataID==1752] <- "STTD"
-phys_yolo$Conductivity[phys_yolo$PhysicalDataID==1752] <- 530
-phys_yolo$SpCnd[phys_yolo$PhysicalDataID==1752] <- 563
-phys_yolo$Turbidity[phys_yolo$PhysicalDataID==1752] <- 16.5
-phys_yolo$Tide[phys_yolo$PhysicalDataID==1752] <- "Ebb"
-phys_yolo$Date[phys_yolo$PhysicalDataID==1752] <-as.Date("2018-09-27", format = "%Y-%m-%d")
-phys_yolo$pH[phys_yolo$PhysicalDataID==1752] <- 8.13
-
-# Formatting
-phys_yolo$Time[phys_yolo$PhysicalDataID==401] <- hms("13:22:00")
-phys_yolo$Time[phys_yolo$PhysicalDataID==1602] <- hms("13:50:00")
-
-# Remove rows with no data
-phys_yolo <- phys_yolo%>%
-  filter(!PhysicalDataID %in% to_drop)
-
-phys_yolo %>%
-  filter(SpCnd>1500)
-
-```
-
-
-### 13. Flag Data
-* Flag data 
-* 3: Replaced (above changes, mostly typos)
-* 2: Suspect data, based on plots, but not out of the realm of possibility, not confirmed in field data
-* blank: Pass
-* Include comment to say which variable is flagged/replaced.
-```{r Flag, message = FALSE, warning = FALSE}
 # Lists for flags and flag comments
 # Modified data due to typos
 modified <- c(688, 680, 656, 748, 926, 1847, 1140, 1139, 1847, 708, 1409, 1501, 1818)
@@ -708,34 +535,18 @@ ph <- c(1501, "SHR_2022-04-26 08:55:00")
 
 # Adding Flag and Comment variables
 phys_yolo_flag <- phys_yolo %>%
-  mutate(Flag_PQC = ifelse(PhysicalDataID %in% modified, 3,
-                           ifelse(PhysicalDataID %in% flag, 2,
-                                  ifelse(event_id %in% flag, 2, ""))),
-         Comment_PQC = ifelse(PhysicalDataID %in% wtemp, "WTEMP",
-                              ifelse(PhysicalDataID %in% turb, "TURB",
-                                     ifelse(PhysicalDataID %in% cond, "COND",
-                                            ifelse(event_id %in% cond, "COND",
-                                            ifelse(PhysicalDataID %in% spc, "SPC",
-                                                   ifelse(PhysicalDataID %in% sec, "SECCHI",
-                                                          ifelse(PhysicalDataID %in% do, "DO",
-                                                                 ifelse(event_id %in% do, "DO",
-                                                          ifelse(PhysicalDataID %in% ph, "PH",
-                                                                 ifelse(event_id %in% ph, "PH", "")))))))))))
+  mutate(Flag_PQC = ifelse(event_id %in% flag, 2, ""),
+         Comment_PQC = ifelse(ifelse(event_id %in% cond, "COND",
+                                ifelse(event_id %in% do, "DO",
+                                  ifelse(event_id %in% ph, "PH", "")))))
 
 phys_yolo_flag$Flag_PQC <- as.factor(phys_yolo_flag$Flag_PQC)
-
-```
-
-## 14. Plot QCed data
-
-```{r Plot edited data, message = FALSE, warning = FALSE, echo = FALSE}
-#
 
 cols = c("lightslategrey", "goldenrod2", "slateblue4")
 p.temp <- ggplot(phys_yolo_flag, aes(Date, WaterTemperature, col = Flag_PQC)) + geom_point() + labs(y = "Water Temp(C)") + scale_colour_manual(values = cols)+
   theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
 p.secchi <- ggplot(phys_yolo_flag, aes(Date, Secchi, col = Flag_PQC)) + geom_point() + labs(y = "Secchi Depth(m)") +
- scale_colour_manual(values = cols)+ theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
+  scale_colour_manual(values = cols)+ theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
 p.conductivity <- ggplot(phys_yolo_flag, aes(Date, Conductivity, col = Flag_PQC)) + geom_point() + labs(y = "Conductivity(useimens/cm)") +
   theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
 p.spc <- ggplot(phys_yolo_flag, aes(Date, SpCnd, col = Flag_PQC)) + geom_point() + labs(y = "SpCnd(useimens/cm)") +
@@ -747,37 +558,21 @@ p.pH <- ggplot(phys_yolo_flag, aes(Date, pH, col = Flag_PQC)) + geom_point() + l
 p.do <- ggplot(phys_yolo_flag, aes(Date, DO, col = Flag_PQC)) + geom_point() + labs(y = "DO(mg/L)") +
   scale_colour_manual(values = cols)+theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
 p.turb <- ggplot(phys_yolo_flag, aes(Date, Turbidity, col = Flag_PQC)) + geom_point() + labs(y = "Turbidity(NTU)") +
- scale_colour_manual(values = cols)+ theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
+  scale_colour_manual(values = cols)+ theme_bw() + theme(axis.text = element_text(size = 10), axis.title = element_text(size = 11))
 
 # Arrange plots together
 grid.arrange(p.temp, p.ec, p.spc, p.secchi, p.turb, p.do, p.pH, ncol = 2)
 
-
-```
-
-### 15. Replace blanks
-```{r Write file, message = FALSE, warning = FALSE}
-#section not used this round of publishing
 # Replace blanks with NA
 empty_as_na <- function(x){
-    if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
-    ifelse(as.character(x)!="", x, NA)
+  if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
+  ifelse(as.character(x)!="", x, NA)
 }
-#old code deprecated, see new version below
-# phys_yolo_flag <- phys_yolo_flag %>%
-#   mutate_each(list(empty_as_na),5:20)
 
 phys_yolo_flag <- phys_yolo_flag %>%
-  mutate(across(.cols = 5:29 & where(is.character), .fns = ~na_if(., "")))
+  mutate(across(.cols = 5:33 & where(is.character), .fns = ~na_if(., "")))
 
-
-```
-
-
-```{r, eval = FALSE}
 # Write cleaned up file to be used later (merged with zooplankton, etc.)
 today = format(today(),"%Y%m%d")
 write.csv(phys_yolo_flag, paste0("R_write/LT_phys_qc_", today, ".csv"), row.names = FALSE)
-
-```
 

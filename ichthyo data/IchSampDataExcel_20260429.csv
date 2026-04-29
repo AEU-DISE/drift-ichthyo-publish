@@ -1,0 +1,79 @@
+﻿YBFMP,Date,Time,Station Code,Use sample code from FLIMS/WDL to connect field data and lab data,,,Duration of tow,Flowmeter reading,Flowmeter reading,Low or Regular,,,Keep this to comments pertaining to zoop collection,,Repeat of net mesh size,1 for 500,1 If normal;    2 if duplicate,
+Measuring program short name,Sampling Event Date,Sampling Event Time,Sampling Area Number,Sampling Event Number,Condition Code,Sampling Altered,Set Time,Flow Meter Start,Flow Meter End,Flow Meter Speed,Entered by,QAQC'd by,Field Comments,Lab Comments,Observation Area Name,Observation Area Number,Spot Number,Spot Code (original/duplicate)
+YBFMP,01/06/2020,10:19,STTD,ES0120B0001,1,,10,656369,660000,Low,ehubbard,pfarman,"Flood tide, motor used faceing upstream with tide",,500,1,1,original
+YBFMP,01/27/2020,09:41,STTD,ES0120B0009,1,,10,646110,650000,Low,ehubbard,pfarman,,,500,1,1,original
+YBFMP,02/10/2020,10:24,STTD,ES0220B0017,1,,10,636217,640000,Low,ehubbard,pfarman,,,500,1,1,original
+YBFMP,02/24/2020,09:47,STTD,ES0220B0025,1,,10,626383,630000,Low,ehubbard,pfarman,,,500,1,1,original
+YBFMP,03/10/2020,09:51,STTD,ES0320B0033,1,,10,612033,616000,Low,ehubbard,pfarman,,,500,1,1,original
+YBFMP,04/26/2021,09:13,SHR,ES0421B0037,1,,,592745,598600,Low,abrady,ehubbard,Used net for comparison,,500,1,1,original
+YBFMP,04/27/2021,09:33,STTD,ES0421B0035,1,,10,592000,587695,low,abrady,ehubbard,,,500,1,1,original
+YBFMP,05/10/2021,09:55,SHR,ES0521B0062,1,,10,582059,587615,Low,abrady,ehubbard,"Looks like time was crossed off, I think net was used for comparison again while testing drift",,500,1,1,original
+YBFMP,05/11/2021,09:31,STTD,ES0521B0060,1,,10,579048,582000,Low,abrady,ehubbard,,,500,1,1,original
+YBFMP,05/25/2021,09:16,STTD,ES0521B0068,1,,10,579020,575456,Low,abrady,ehubbard,,,500,1,1,original
+YBFMP,06/09/2021,09:37,STTD,ES0621B0084,1,,10,575408,571958,low,abrady,ehubbard,,,500,1,1,original
+YBFMP,06/22/2021,09:17,STTD,ES0621B0092,1,,10,571829,568363,Low,ehubbard,pfarman,,,500,1,1,original
+YBFMP,01/10/2022,10:54,STTD,ES0122B0001,1,,5,568296,566855,Low,ehubbard,abrady,,,500,1,1,original
+YBFMP,01/24/2022,12:33,STTD,ES0122B0009,1,,10,566705,563246,Low,ehubbard,abrady,"some transferred with tap water, but corrected with DI",,500,1,1,original
+YBFMP,02/07/2022,10:17,STTD,ES0222B0017,1,,10,563195,560285,Low,abrady,ehubbard,,,500,1,1,original
+YBFMP,02/22/2022,09:52,STTD,ES0222B0025,1,N,10,560152,556946,Low,ehubbard,lolson,,,500,1,1,original
+YBFMP,03/14/2022,09:27,STTD,ES0322B0033,2,Y,5,556647,555672,Low,ehubbard,lolson,"motor died on last 30 seconds, paddled rest of way",,500,1,1,original
+YBFMP,03/28/2022,08:01,STTD,ES0322B0041,1,N,10,555660,552436,Low,ehubbard,lolson,,,500,1,1,original
+YBFMP,04/11/2022,08:05,STTD,ES0422B0049,1,Y,10,552345,549800,Low,ehubbard,lolson,sampled from jonboat,,500,1,1,original
+YBFMP,04/25/2022,08:07,STTD,ES0422B0099,1,Y,10,549735,547868,Low,ehubbard,lolson,,,500,1,1,original
+YBFMP,05/09/2022,10:39,STTD,ES0522B0115,1,Y,10,547826,544764,Low,ehubbard,lolson,,,500,1,1,original
+YBFMP,05/23/2022,10:12,STTD,ES0522B0123,1,Y,10,544860,541730,Low,ehubbard,lolson,towed from Jon boat,,500,1,1,original
+YBFMP,06/07/2022,08:17,STTD,ES0622B0131,1,N,10,541600,537852,Low,ehubbard,lolson,,,500,1,1,original
+YBFMP,06/21/2022,8:09,STTD,ES0622B0139,1,Y,10,537810,534969,Low,ehubbard,lolson,boat used,,500,1,1,original
+YBFMP,01/03/2023,11:00,STTD,ES0122B0037,1,Y,10,524347,518337,Low,molinger,lgunning,Sampled from jon boat (forward),,500,1,1,original
+YBFMP,01/12/2023,10:10,STTD,ES0123B0046,1,Y,5,522033,529156,Reg,lolson,lgunning,Reduced sampling time to half,,500,1,1,original
+YBFMP,01/17/2023,12:18,STTD,ES0123B0055,1,Y,5,529277,542378,Reg,lgunning,ehubbard,"Sampled 2 CHNF+ parr in ICH net, gen sampled, Genetic ID # : 2023Ad_plus-F_009 2023Ad_plus-F_010. retured to Ich sample.",,500,1,1,original
+YBFMP,01/24/2023,10:28,STTD,ES0123B0064,1,Y,5,542612,559438,Reg,lolson,molinger,,,500,1,1,original
+YBFMP,01/30/2023,09:52,STTD,ES0123B0073,1,Y,5,559764,567743,Reg,molinger,lolson,,,500,1,1,original
+YBFMP,02/09/2023,11:01,STTD,ES0223B0082,1,Y,5,567645,565522,Low,molinger,lolson,,,500,1,1,original
+YBFMP,02/21/2023,10:20,STTD,ES0223B0091,1,N,10,565319,562013,Low,molinger,lolson,,,500,1,1,original
+YBFMP,03/06/2023,09:45,STTD,ES0323B0100,1,N,10,561893,557610,Low,molinger,lolson,,,500,1,1,original
+YBFMP,03/16/2023,09:34,STTD,ES0323B0109,1,N,5,557608,560200,Reg,molinger,lolson,Reduced tow time 1/2,,500,1,1,original
+YBFMP,03/29/2023,08:32,STTD,ES0323B0118,1,N,10,560242,596407,Reg,lolson,molinger,,,500,1,1,original
+YBFMP,04/03/2023,09:42,STTD,ES0423B0127,1,N,10,596418,579887,Low,lolson,molinger,,,500,1,1,original
+YBFMP,04/10/2023,09:25,STTD,ES0423B0135,1,N,10,579693,570510,Low,lolson,molinger,,,500,1,1,original
+YBFMP,05/01/2023,09:07,STTD,ES0523B0151,1,N,10,570348,566851,Low,molinger,lolson,,,500,1,1,original
+YBFMP,05/15/2023,08:12,STTD,ES0523B0180,1,N,10,566657,563067,Low,lolson,molinger,,,500,1,1,original
+YBFMP,05/30/2023,08:04,STTD,ES0523B0188,1,N,10,562833,559791,Low,molinger,lolson,,,500,1,1,original
+YBFMP,06/12/2023,08:17,STTD,ES0623B0322,1,N,10,559631,557308,Low,molinger,lolson,,,500,1,1,original
+Shared,06/26/2023,12:24,STTD,ES0623B0452,1,N,10,557248,552226,Low,lolson,lwigger,,,500,1,1,original
+YBFMP,01/08/2024,09:19,STTD,ES0124B001,1,N,10,944200,940677,Low,lolson,acevans,Towed from boat- FLD tide,,500,1,1,original
+YBFMP,01/29/2024,11:44,STTD,ES0124B0010,1,N,10,940600,934962,Low,lolson,acevans,,,500,1,1,original
+YBFMP,02/06/2024,09:58,STTD,ES0224B0019,1,N,5,934934,933265,Low,lolson,acevans,Reduced tow time. Used low flow rotor b/c best available data indicated ft/s < 3.0,,500,1,1,original
+YBFMP,02/13/2024,12:12,STTD,ES0224B0028,1,Y,5,933224,923911,Low,lolson,acevans,,,500,1,1,original
+YBFMP,02/20/2024,09:53,STTD,ES0224B0037,3,N,5,923898,917942,Low,lolson,acevans,Halfed tows b/c flow,,500,1,1,original
+YBFMP,03/04/2024,09:39,STTD,ES0324B0055,1,N,5,917900,910220,Low,lolson,acevans,Halfed tows,,500,1,1,original
+YBFMP,03/11/2024,08:50,STTD,ES0324B0064,1,N,5,910222,901950,Low,lolson,acevans,,,500,1,1,original
+YBFMP,03/25/2024,09:21,STTD,ES0324B0073,1,N,10,902000,893256,Low,lolson,acevans,,,500,1,1,original
+YBFMP,04/08/2024,09:07,STTD,ES0424B0082,1,N,10,893000,886227,Low,lolson,acevans,,,500,1,1,original
+YBFMP,04/15/2024,10:20,STTD,ES0424B0091,1,N,10,886205,881217,Low,lolson,acevens,Switched to Ebb tide,,500,1,1,original
+YBFMP,05/06/2024,09:14,STTD,ES0524B0100,1,N,10,881180,876350,Low,acevans,lolson,,,500,1,1,original
+YBFMP,05/20/2024,07:50,STTD,ES0524B0109,1,N,10,876340,872567,Low,acevans,lolson,,,500,1,1,original
+YBFMP,06/03/2024,08:25,STTD,ES0624B0118,1,N,10,545000,541323,Low,acevans,lolson,,,500,1,1,original
+YBFMP,06/17/2024,08:24,STTD,ES0624B0128,1,N,10,541222,537615,Low,acevans,lolson,,,500,1,1,original
+YBFMP,01/13/2025,10:35,STTD,ES0125B0001,1,N,10,849277,863182,REG,aniemela,ftorres,,,500,1,1,original
+YBFMP,01/27/2025,09:08,STTD,ES0125B0010,1,N,10,863211,860975,Low,ftorres,cbaerwaldt,,,500,1,1,original
+YBFMP,02/10/2025,11:40,STTD,ES0225B0019,1,Y,10,861012,862880,Reg,aniemela,cbaerwaldt,sampling done from john boat,,500,1,1,original
+YBFMP,02/19/2025,10:47,STTD,ES0225B0028,1,Y,10,862900,867313,Reg,ftorres,cbaerewaldt,Tow done from john boat in eddy,,500,1,1,original
+YBFMP,02/25/2025,10:32,STTD,ES0225B0037,4,N,,,,,aniemela,cbaerwaldt,no tows. ,,500,1,1,original
+YBFMP,3/3/2025,9:34,STTD,ES0325B0046,1,N,10,867500,853560,Low,aniemela,cbaerwaldt,low rotor,,500,1,1,original
+YBFMP,03/17/2025,08:53,STTD,ES0325B0055,1,N,10,853600,847556,Low,cbaerwaldt,ftorres,,,500,1,1,original
+YBFMP,04/01/2025,09:00,STTD,ES0425B0308,1,Y,10,847600,841856,Low,ftorres,cbaerwaldt,Sampled from John Boat,,500,1,1,original
+YBFMP,04/14/2025,09:44,STTD,ES0425B0317,1,N,10,843000,837153,Low,ftorres,cbaerwaldt,,,500,1,1,original
+YBFMP,04/28/2025,09:28,STTD,ES0425B0326,1,N,10,837000,833422,Low,ftorres,cbaerwaldt,,,500,1,1,original
+YBFMP,05/12/2025,08:22,STTD,ES0525B0344,1,N,10,833400,830380,Low,ftorres,cbaerwaldt,,,500,1,1,original
+YBFMP,05/27/2025,09:07,STTD,ES0525B0353,1,N,10,873300,870921,Low,cbaerwaldt,aniemela,,,500,1,1,original
+YBFMP,06/23/2025,09:04,STTD,ES0625B0363,1,N,10,823000,816592,Low,ftorres,aniemela,tow from jon boat,,500,1,1,original
+YBFMP,01/05/2026,10:58,STTD,ES0126B0022,1,N,10,816600,832195,Reg,cbaerwaldt,aniemela,,,500,1,1,original
+YBFMP,01/12/2026,10:01,STTD,ES0126B0029,1,N,10,832190,849544,Reg,cbaerwaldt,aniemela,,,500,1,1,original
+YBFMP,01/20/2026,11:05,STTD,ES0126B0036,1,Y,10,849528,841359,Low,cbaerwaldt,aniemela,"Zoop soup, On screw trap alt cables",,500,1,1,original
+YBFMP,02/02/2026,11:21,STTD,ES0226B0043,1,N,10,841270,838384,Low,aniemela,cbaerwaldt,sampled from Jon boat,,500,1,1,original
+YBFMP,02/17/2026,10:06,STTD,ES0226B0050,1,Y,10,838250,835489,Low,aniemela,cbaerwaldt,trap on alt down cables,,500,1,1,original
+YBFMP,03/04/2026,10:06,STTD,ES0326B0057,1,Y,10,835500,854553,Reg,cbaerwaldt,aniemela,trap on alt down cables,,500,1,1,original
+YBFMP,03/19/2026,09:40,STTD,ES0326B0064,1,N,10,854800,849930,Low,cbaerwaldt,aniemela,,,500,1,1,original
+YBFMP,04/01/2026,10:09,STTD,ES0426B0071,1,N,10,849927,846560,Low,aniemela,cbaerwaldt,,,500,1,1,original
+YBFMP,04/13/2026,08:54,STTD,ES0426B0093,1,Y,10,846400,842806,Low,aniemela,cbaerwaldt,sampled from Jon boat,,500,1,1,original
