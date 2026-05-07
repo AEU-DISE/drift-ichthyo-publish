@@ -470,3 +470,38 @@ SamplingQAQC$Comment_SAMP <-""
 SamplingQAQC$Flag_LAB <- ""
 SamplingQAQC$Comment_LAB <- ""
 today <- today()
+
+######################################################################################################
+#figure out duplicate taxon names and weird 0s from Rosie's discovery
+drift1 <- read.csv("R_write/Sampling_Drift_1998-2022.csv")
+drift2 <- read.csv("R_write/Sampling_Drift_2023-2024.csv")
+duplicates <- read.csv("C:/Users/lvance/Desktop/DriftDuplicates.csv")
+tax <- read_csv("drift data/DriftTaxonomy.csv") #came from EDI folder in data drive from previous publication
+inv_tax_2 <- read_csv("drift data/TblInvertsLookUpV2.csv") #comes from access
+
+taxa <- c("Amnicolidae","Andrenidae","Aphididae","Bivalvia","Braconidae","Cecidomyiidae", 
+          "Chloroperlidae","Cicadellidae", "Crambidae","Curculionidae",
+          "Formicidae","Insecta","Ixodida","Lygaeidae","Mantodea","Phlaeothripidae",
+          "Poduridae","Protura","Pteromalidae","Ptiliidae","Reduviidae","Salticidae",
+          "Sciaridae","Succineidae")
+
+list <- filter_all(tax, taxa %in% tax$TaxonName)
+
+
+#######################################
+checkdate <- mutate(ifelse(phys_samp$Datetime %in% catch2$Datetime))
+
+tz(phys)
+tz(samp2)
+tz(phys_samp)
+tz(catch2)
+
+force_tz(catch2$Datetime, tzone = "PST8PDT")
+force_tz(phys_samp$Datetime, tzone = "PST8PDT")
+tz(catch2)
+tz(phys_samp)
+
+print(phys_samp$Datetime)
+print(unique(catch2$Datetime))
+
+OlsonNames()

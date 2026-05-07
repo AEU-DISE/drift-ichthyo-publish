@@ -46,7 +46,7 @@ inundation <- read_csv("Yolo_Bypass_Inundation_1998-2024.csv")
 
 
 3. Rename columns, clean up, merge contractor data and Excel data
-```{r}
+```{r, results = FALSE, warning = FALSE, message = FALSE}
 catch3 <- catch %>%
   filter(!(is.na(`Measuring program short name`))) %>%
   rename(Count = `Value...11`,
@@ -121,7 +121,7 @@ samp2 <- samp %>%
 
 
 4. Adjust date/time formats, create datetime column for ease of organizing and QA/QC
-```{r}
+```{r, results = FALSE, warning = FALSE, message = FALSE}
 #phys looks like it's in the correct format already post qa/qc
 
 
@@ -165,14 +165,37 @@ str(samp2)
 str(catch2)
 str(inundation)
 
+```
+
+
+5. Create an event ID that can be used as a unique identifier for each sampling event
+```{r, results = FALSE, warning = FALSE, message = FALSE}
+#first create event_id
+catchdrift2 <- catchdrift %>%
+  mutate(event_id = paste0(Station, "_", Datetime)) %>%
+  relocate(event_id, Datetime)
+
+samp3 <- samp2 %>%
+  mutate(event_id = paste0(Station, "_", Datetime)) %>%
+  relocate(event_id, Datetime)
+
+#join data frames
+samp_catch <- left_join(samp3, catchdrift2)
+
+#check column types for joining
+str(phys)
+str(samp_catch)
+
+#join with qaqc physical data
+samp_catch_phys <- left_join(phys, samp_catch)
+
+#write catch data to csv for ease of future updates
+write_csv(samp_catch_phys, paste("R_write/Sampling_Drift_2023-2024.csv"))
+
 
 ```
 
-```{r}
-
-```
-
-```{r}
+```{r, results = FALSE, warning = FALSE, message = FALSE}
 
 ```
 
