@@ -1,0 +1,406 @@
+---
+title: "Drift Update"
+author: "Lisa Vance"
+date: "2026-05-04"
+output: html_document
+---
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width = 10000)
+```
+
+
+
+```{r setup, results=FALSE, warning = FALSE, message = FALSE}
+rm(list=ls(all=TRUE))
+
+library(tidyverse)
+library(gridExtra) # combine plots
+library(stringr)
+library(readr)
+library(lubridate)
+library(plotly)
+library(viridis)
+library(kableExtra)
+library(tidylog)
+
+```
+
+
+```{r load, results = FALSE, warning = FALSE, message = FALSE}
+# Load data - several tables
+phys <- read_csv("drift data/LT_phys_qc_20240118.csv")
+phys2 <- read_csv("drift data/LT_phys_qc_20260429.csv")
+catch <- read_csv("drift data/2019 and prior/Drift_Catch_20200918.csv")
+catch2 <- read_csv("drift data/2019 and prior/Drift_Catch_Contractor_20210330.csv")
+###########
+catch3 <- read_csv("drift data/Drift_Catch_20260429.csv", skip=1)
+catch4<- read_csv("drift data/Drift_20231030-20241231.csv")
+##########
+samp <- read_csv("drift data/2019 and prior/Drift_Samplings_20200918.csv")
+samp2 <- read_csv("drift data/2019 and prior/Drift_Sampling_Access_20210330.csv")
+#########
+samp3 <- read_csv("drift data/DriftSampExcelData_20260429.csv", skip=1)
+#########
+tax <- read_csv("drift data/DriftTaxonomy.csv")
+wy <- read_csv("WaterYearType_CDEC.csv") 
+inundation <- read_csv("Yolo_Bypass_Inundation_1998-2024.csv")
+#inv_tax_2 <- read_csv("Data/TblInvertsLookUpV2.csv")
+
+# Add and change date formats
+str(phys)
+str(phys2)
+# phys files seem to be in correct format post qaqc
+
+str(catch)
+str(catch2)
+str(catch3)
+
+catch$Time <- as.POSIXct(catch$Time,
+                         format = "%m/%d/%Y %H:%M")
+
+catch2$Date <- as.Date(catch2$Date, "%m/%d/%Y")
+catch2$Time <- hms::as_hms(catch2$Time)
+catch2$Datetime = paste(catch2$Date, catch2$Time)
+catch2$Datetime <- as.POSIXct(catch2$Datetime, 
+                           format = "%Y-%m-%d %H:%M:%S")
+
+catch3 <- catch3 %>%
+  filter(!(is.na(`Measuring program short name`))) %>%
+  rename(Count = `Value...11`,
+         LifeStage = `Value...12`,
+         TaxonName = Observable,
+         Date = `Sampling Event Date`,
+         Time = `Sampling Event Time`,
+         Station = `Sampling Area Number`,
+         SAMCode = `Sampling Event Number`,
+         SampleID = `Sample ID`,
+         LabComments = lab_comments) %>%
+  select(-c(`Measuring program short name`, `Observation Type Short Name`,
+            SAMCode))
+
+catch3$Date <- as.Date(catch3$Date, "%m/%d/%Y")
+catch3$Time <- hms::as_hms(catch3$Time)
+catch3$Datetime = paste(catch3$Date, catch3$Time)
+catch3$Datetime <- as.POSIXct(catch3$Datetime, 
+                           format = "%Y-%m-%d %H:%M:%S")
+
+catch4 <- catch4 %>% 
+  select(-c(measuring_program, sam_code, short_name)) %>% 
+  rename(Date = date_col,
+         Time = time,
+         Station = station,
+         SampleID = sample_id,
+         Attribute = attribute,
+         TaxonName = observable,
+         Category = category,
+         Count = count,
+         LifeStage = life_stage,
+         LabComments = lab_comments)
+
+catch4$Date <- as.Date(catch4$Date, "%m/%d/%Y")
+catch4$Time <- hms::as_hms(catch4$Time)
+catch4$Datetime = paste(catch4$Date, catch4$Time)
+catch4$Datetime <- as.POSIXct(catch4$Datetime, 
+                           format = "%Y-%m-%d %H:%M:%S")
+str(catch3)
+str(catch4)
+
+catch3ed <- bind_rows(catch3, catch4)
+
+str(samp)
+str(samp2)
+str(samp3)
+
+samp$Date<-as.Date(samp$Date,"%m/%d/%Y")
+samp$`Date/Time` = as.POSIXct(samp$`Date/Time`, 
+                           format = "%m/%d/%Y %H:%M:%S")
+
+samp3 <- samp3 %>%
+  filter(!(is.na(`Measuring program short name`))) %>%
+  rename(FlowMeterStart = `Flow Meter Start`,
+         FlowMeterEnd = `Flow Meter End`,
+         Date = `Sampling Event Date`,
+         Time = `Sampling Event Time`,
+         Station = `Sampling Area Number`,
+         SAMCode = `Sampling Event Number`,
+         MeshSize = `Observation Area Name`,
+         SampleAltered = `Sampling Altered`,
+         ConditionCode = `Condition Code`,
+         SetTime = `Set Time`,
+         FlowMeterSpeed = `Flow Meter Speed`, 
+         FieldComments = `Field Comments`,
+         SlideCount = `Slide Count`,
+         SampleVolume = `Sample Volume`,
+         SubsampleNumber = `Subsample Number`,
+         DilutionVolume = `Dilution Volume`,
+         PhysicalDataID = `Physical Data ID`) %>%
+  select(-c(`Observation Area Number`, `Spot Code (original/duplicate)`, `...27`, `...28`,
+            `...29`, `...30`, `...31`, `...32`,
+            `Spot Number`, `Flow Meter Start (50)`, `Flow Meter End (50)`,
+            `Entered by`, `QAQC'd by`, `...6`, `Measuring program short name`,
+            SAMCode))
+
+samp3$Date <- as.Date(samp3$Date,"%m/%d/%Y")
+samp3$Time <- hms::as_hms(samp3$Time)
+samp3$Datetime = paste(samp3$Date, samp3$Time)
+samp3$Datetime <- as.POSIXct(samp3$Datetime, 
+                           format = "%Y-%m-%d %H:%M:%S")
+inundation <- inundation %>%
+  rename(Date = Dates)
+inundation$Date<-ymd(inundation$Date)
+
+str(phys)
+str(catch)
+```
+
+```{r filter, results = FALSE, message = FALSE, warning = FALSE}
+
+
+catch <- catch %>%
+  mutate(SamplingID = str_extract(`Sampling number`, "[^/]+")) %>%
+  rename(Datetime = Time,
+         TaxonName = Observable,
+         LifeStage = `Life Stage`) %>%
+  select(-c(Value, `Sampling number`))
+catch$SamplingID = as.numeric(catch$SamplingID)
+
+samp <- samp %>% 
+  rename(SamplingID = `Sampling number`,
+         Datetime = `Date/Time`,
+         InvertDataID = `Invertebrate Data ID`,
+         ConditionCode = `Condition Code`,
+         SetTime = `Set Time`,
+         FlowMeterSpeed = `Flow Meter Speed`,
+         FlowMeterStart = `Flow Meter Start`,
+         FlowMeterEnd = `Flow Meter End`,
+         LabComments = `Lab Comments`,
+         FieldComments = `Field Comments`) %>%
+  select(-`Invertebrate Catch ID`) %>% 
+  arrange(Datetime)
+samp$SamplingID <- as.numeric(samp$SamplingID)
+summary(samp)
+
+catch2 <- catch2 %>%
+  rename(Count = Individuals,
+         Category = `Insect/Non-Insect`,
+         LifeStage = Stage,
+         TaxonName = Name) %>%
+  select(-c("Number", "Time"))
+
+samp2 <- samp2 %>%
+  rename(FlowMeterStart = DriftStartMeter,
+         FlowMeterEnd = DriftEndMeter) %>%
+  select(-c("StartTime", "StopTime"))
+
+
+
+
+#check data types again
+str(phys)
+str(catch)
+str(samp)
+str(samp2)
+str(catch2)
+str(inundation)
+
+```
+
+
+
+```{r merge, message = FALSE, warning = FALSE}
+
+samp_catch <- left_join(samp, catch, by = c("SamplingID", "Station")) %>%
+  rename(Datetime = Datetime.x) %>%
+  select(-c(Datetime.y))
+
+# Merge physical data
+samp_catch_phys0 <- left_join(phys, samp_catch, by = "PhysicalDataID") %>%
+  rename(Station = Station.x,
+         Date = Date.x,
+         Time = Time.x,
+         Datetime = Datetime.x) %>%
+  select(-c(Station.y, Date.y, Time.y, Datetime.y)) %>%
+ filter(!is.na(Station)) %>%
+  select(-c("ConditionCode.x", "MeterSetTime", "FlowMeterStart.x", "FlowMeterEnd.x",
+            "FlowMeterSpeed.x", "FieldComments.x")) %>%
+  rename(FlowMeterStart = "FlowMeterStart.y",
+         FlowMeterEnd = "FlowMeterEnd.y",
+         FlowMeterSpeed = "FlowMeterSpeed.y",
+         ConditionCode = "ConditionCode.y",
+         FieldComments = "FieldComments.y") %>% 
+  filter(Date < "2019-04-22") 
+notjoinedPhysDataID <- anti_join(phys, samp_catch, by = "PhysicalDataID")
+
+# For second part 2019, merge phys-samp, then add catch.
+# For the additional data
+phys_samp <- left_join(phys, samp2, by = c("PhysicalDataID")) %>%
+  filter(Date > "2019-04-16" & Date < "2020-01-01") %>%
+  mutate(SamplingID = "N/A") %>% 
+    select(-c("ConditionCode.x", "MeterSetTime", "FlowMeterStart.x", "FlowMeterEnd.x",
+            "FlowMeterSpeed.x", "FieldComments.x", "EnteredBy", "QA/QC'dBy")) %>%
+  rename(FlowMeterStart = "FlowMeterStart.y",
+         FlowMeterEnd = "FlowMeterEnd.y",
+         FlowMeterSpeed = "FlowMeterSpeed.y",
+         ConditionCode = "ConditionCode.y",
+         FieldComments = "FieldComments.y") %>% 
+  arrange(Datetime)
+
+str(phys_samp)
+str(catch2)
+
+
+phys_samp_catch0 <- left_join(phys_samp, catch2, by = c("Date", "Station")) %>%
+    select(c(event_id:Comment_PQC, SamplingID, InvertDataID:SetTime, FlowMeterSpeed, FlowMeterStart, FlowMeterEnd, LabComments, FieldComments, TaxonName, Count, Category, LifeStage)) %>% 
+  rename(Datetime = Datetime.x)
+
+str(phys_samp_catch0)
+
+########group of 2020 on
+phys3 <- bind_rows(phys, phys2) %>% 
+  filter(year(Date) > 2019) %>% 
+  arrange(Datetime)
+#check january 2020 - in both access and excel
+samp2ed <- samp2 %>% 
+  filter(PhysicalDataID == 2010 | PhysicalDataID == 2005 |
+           PhysicalDataID == 2009| PhysicalDataID == 2007)
+
+phys3ed <- phys3 %>% 
+  filter(MonthAbb == "Jan" & Year == 2020)
+
+overlap <- left_join(phys3ed, samp2ed, by = "PhysicalDataID") %>% 
+  select(-c(ConditionCode.x, MeterSetTime, FlowMeterStart.x, FlowMeterEnd.x, FlowMeterSpeed.x, FieldComments.x,
+           EnteredBy, "QA/QC'dBy")) %>% 
+  rename(FlowMeterStart = FlowMeterStart.y,
+         FlowMeterEnd = FlowMeterEnd.y,
+         FieldComments = FieldComments.y,
+         ConditionCode = ConditionCode.y,
+         FlowMeterSpeed = FlowMeterSpeed.y)
+
+overlapcatch <- left_join(overlap, catch3ed, by = c("Date", "Time", "Station")) %>% 
+  select(-(Datetime.x)) %>% 
+  rename(Datetime = Datetime.y)
+
+##########
+phys3ed2 <- phys3 %>% 
+  filter(!(MonthAbb == "Jan" & Year == 2020)) %>% 
+  unique()
+
+phys_samp3 <- left_join(phys3ed2, samp3, by = c("Date", "Time", "Station", 
+                                                "ConditionCode", "MeshSize", "Datetime", "PhysicalDataID")) %>% 
+  select(-c(SetTime, SlideCount, FlowMeterStart.y, FlowMeterEnd.y, FlowMeterSpeed.y, FieldComments.y)) %>% 
+  rename(SetTime = MeterSetTime,
+         FlowMeterStart = FlowMeterStart.x,
+         FlowMeterEnd = FlowMeterEnd.x,
+         FlowMeterSpeed = FlowMeterSpeed.x,
+         FieldComments = FieldComments.x)
+
+phys_samp_catch3 <- left_join(phys_samp3, catch3ed, by = c("Date", "Time", "Station")) %>% 
+  select(-(Datetime.y)) %>% 
+  rename(Datetime = Datetime.x)
+
+sampcatchphysMerge <- rbind(samp_catch_phys0, phys_samp_catch0) %>% 
+  arrange(Datetime)
+
+sampcatchphysMerge2 <- bind_rows(overlapcatch, phys_samp_catch3)
+
+sampcatchphysMergefinal <- bind_rows(sampcatchphysMerge, sampcatchphysMerge2) %>% 
+  arrange(Datetime)
+
+#write to csv total merge file
+write_csv(sampcatchphysMergefinal, paste("R_write/Sampling_Drift_1998-2024.csv"))
+
+# All samplings - remove catch info and find unique entries
+sampUnique <- sampcatchphysMergefinal %>%
+  select(-c(WeatherCode:Turbidity, Year:Comment_PQC,  LabComments, TaxonName:LifeStage)) %>%
+  unique() %>%
+  arrange(Datetime)
+```
+
+
+```{r}
+
+# In the future, figure out what to do with lab comments, which for drift are at the observable level. If they never include lab comments relative to sample quality, leave these out. If they are included, need to add !is.na(LabComments to the SamplingQAQC command.)
+sampA <- sampcatchphysMergefinal %>%
+  select(-c(WeatherCode:Turbidity, Year:Comment_PQC,  TaxonName:LifeStage)) %>%
+  unique() %>%
+  arrange(Datetime)
+
+
+```
+
+
+```{r}
+samp_catch_physMergefinal <- sampcatchphysMergefinal %>%
+  mutate(WY = ifelse(Month >9, Year + 1, Year)) %>%
+  left_join(wy, by = "WY") %>%
+  select(-c(Index, WYType)) %>%
+  mutate(Flowdiff = FlowMeterEnd-FlowMeterStart)
+
+```
+
+## QAQC 
+
+* QC Flags: Blank = no issues/1 = Comment but deemed Acceptable/ 2 = Suspect/ 3 = Highly Suspect
+* Flag_SAMP: Sampling issues
+* Flag_LAB: Lab issues
+* Flag_FM: Flowmeter
+* Flag_CPUE: CPUE
+
+### QAQC Sampling and Lab issues
+
+6. Export sampling table
+7. Look at field sampling comments
+8. Flag comments reflecting poor data quality (Flag_SAMP)
+9. Add comment about what was flagged
+    * FMMISSING if lacking flowmeter values
+    * SAMP for other sampling issues 
+    * Leave blank if no issues
+10. Look at lab comments and flag if poor data quality
+11. Add Comment_LAB
+    * LAB if lab issues (e.g. unable to meet meso or microtally)
+    * Leave blank if no issues
+
+* This part is manual. Think about how to make this codeable, change our condition code flags or add a flag as part of data entry? 
+
+```{r}
+SamplingQAQC <- filter(sampUnique, !is.na(FieldComments) | ConditionCode>1 )
+SamplingQAQC$Flag_SAMP <-  ""
+SamplingQAQC$Comment_SAMP <-""
+SamplingQAQC$Flag_LAB <- ""
+SamplingQAQC$Comment_LAB <- ""
+today <- today()
+
+SamplingQAQC1 <- SamplingQAQC %>% 
+  filter(year(Date)>2022)
+write.csv(SamplingQAQC1, paste("R_write/Drift/SamplingQAQC_", today, ".csv"))
+SamplingQAQC2 <- SamplingQAQC %>% 
+  filter(year(Date)<2023)
+write.csv(SamplingQAQC2, paste("R_write/Drift/SamplingQAQC2_", today, ".csv"))
+```
+
+```{r}
+#read in QAQC'd data and bind previously done QAQC with new QAQC
+
+SamplingQAQC_fill <- read.csv("R_write/SamplingQAQC_Notated_20240430.csv")
+SamplingQAQC_fill2 <- read.csv("R_write/SamplingQAQC_Notated_.csv")
+SamplingQAQC_fill_s <- SamplingQAQC_fill %>%
+  select(c(PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
+SamplingQAQC_fill_s2 <- SamplingQAQC_fill2 %>%
+  select(c(PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
+
+SamplingQAQC_fill_sfinal <- bind_rows(SamplingQAQC_fill_s, Sampling_QAQC_fill_s2)
+```
+#in the future, utilize the QAQC file moving forward and bind to only the most recent updating data - reduce redundancy of work being done - code will need to be re-written to accommodate this in the future
+
+### QAQC Flowmeters
+
+13. Inundation data
+
+    This data comes from Water Data Library, Stations at Fremont Weir (A02170) and I Street Bridge . If Stage Height > 32ft at Fremont Weir, Inundation = TRUE. If there is no data at Fremont Weir, and Stage Height > 17 ft at I Street Bridge, Inundation = TRUE. There was also 2 days of lag time added in for inundation (variable Inundation2). 
+    
+* Inundation used to QA/QC STTD data. 
+
+
+
+
