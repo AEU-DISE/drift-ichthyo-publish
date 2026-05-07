@@ -364,7 +364,7 @@ samp_catch_physMergefinal <- sampcatchphysMergefinal %>%
 * This part is manual. Think about how to make this codeable, change our condition code flags or add a flag as part of data entry? 
 
 ```{r}
-SamplingQAQC <- filter(sampUnique, !is.na(FieldComments) | ConditionCode>1 )
+SamplingQAQC <- filter(sampUnique, !is.na(FieldComments) | ConditionCode>1)
 SamplingQAQC$Flag_SAMP <-  ""
 SamplingQAQC$Comment_SAMP <-""
 SamplingQAQC$Flag_LAB <- ""
@@ -382,8 +382,8 @@ write.csv(SamplingQAQC2, paste("R_write/Drift/SamplingQAQC2_", today, ".csv"))
 ```{r}
 #read in QAQC'd data and bind previously done QAQC with new QAQC
 
-SamplingQAQC_fill <- read.csv("R_write/SamplingQAQC_Notated_20240430.csv")
-SamplingQAQC_fill2 <- read.csv("R_write/SamplingQAQC_Notated_.csv")
+SamplingQAQC_fill <- read.csv("R_write/SamplingQAQC2_Notated_20260507.csv")
+SamplingQAQC_fill2 <- read.csv("R_write/SamplingQAQC_Notated_20260507.csv")
 SamplingQAQC_fill_s <- SamplingQAQC_fill %>%
   select(c(PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
 SamplingQAQC_fill_s2 <- SamplingQAQC_fill2 %>%
@@ -401,6 +401,62 @@ SamplingQAQC_fill_sfinal <- bind_rows(SamplingQAQC_fill_s, Sampling_QAQC_fill_s2
     
 * Inundation used to QA/QC STTD data. 
 
+```{r}
+inundation <- inundation %>%
+  mutate(Month = month(Date),
+         Year = year(Date),
+         WY = ifelse(Month > 9, Year + 1, Year))
+
+# Modify sample table to include Flowdiff
+samp3 <-sampUnique %>%
+  mutate(Flowdiff = FlowMeterEnd-FlowMeterStart,
+         Flowdiff_s = Flowdiff/SetTime) 
+
+# merged inundation and sampling
+inundation_flow <- left_join(samp3, inundation, by = "Date") %>%
+    filter(Flowdiff<100000) %>%
+  filter(Station == "STTD") %>%
+  mutate(Flowdiff_s = Flowdiff/SetTime,
+         Inundation_n = ifelse(Inundation == "TRUE", 40000, 0))
+
+# all inundation
+inundation2 <- inundation %>%
+  mutate(Inundation_n = ifelse(Inundation == "TRUE", 40000, 0),
+         Inundation_n_low = ifelse(Inundation == "TRUE", 5000,0))
+
+# Plot - only inundation events that correspond with sampling date
+inplot1 <- ggplot(inundation_flow) + 
+  geom_point(aes(x = Date, y = Flowdiff)) + 
+  geom_col(aes(x = Date, y = Inundation_n), fill = "blue", size = 2) + 
+  labs(title = "Flowdiff with Inundation events corresponding with sample dates") +
+  facet_grid(Station~.) +
+  theme_bw()
+
+# Plot - All inundation events
+inplot2 <- ggplot() +
+  geom_point(data = inundation_flow, aes(x = Date, y = Flowdiff)) +
+  labs(title = "Flowdiff with all Inundation") +
+  geom_col(data = inundation2, aes(x = Date, y = Inundation_n), fill = 
+                 "blue", alpha = 0.6) + theme_bw()
+
+inplot3 <- ggplot() +
+  geom_point(data = inundation_flow, aes(x = Date, y = Flowdiff_s)) +
+  labs(title = "Standardized Flowdiff with all Inundation") +
+  geom_col(data = inundation2, aes(x = Date, y = Inundation_n_low), fill = 
+                 "blue", alpha = 0.6) + theme_bw()
+
+grid.arrange(inplot1, inplot2, inplot3, nrow = 3)
+
+
+# Allow 10 days after last "inundation=TRUE" to also count as inundated. Merge with sample data. 
+inundation4 <- inundation %>%
+  mutate(Inundation2 = ifelse(lead(Inundation, 10) == "TRUE", "TRUE", Inundation)) %>%
+  select(c(Date, Month:Inundation2))
+
+samp_catch_phys <- left_join(samp_catch_physMerge, inundation4)%>%
+  select(-SampleID)
+
+```
 
 
 
