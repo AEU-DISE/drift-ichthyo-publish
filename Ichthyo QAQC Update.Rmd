@@ -1,0 +1,316 @@
+---
+title: "Ichthyo_QAQC_update"
+author: "Lisa Vance"
+date: "2026-05-18"
+output: html_document
+---
+
+YBFMP Ichthyoplankton Data 1998-2024
+
+```{r set-options, echo=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Set up and load libraries
+
+```{r setup, results=FALSE, warning = FALSE, message = FALSE}
+rm(list=ls(all=TRUE))
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(gridExtra)
+library(stringr)
+library(plotly)
+library(viridis)
+library(kableExtra)
+library(lubridate)
+library(readxl)
+library(readr)
+library(anytime)
+library(magrittr)
+library(janitor)
+library(tidylog)
+```
+
+2. Load data and check variable types
+Note data originally came from both MS Access and MS Excel
+Physical data is shared between drift and ichthyo since tows are done at the same time and site
+
+```{r load, results = FALSE, warning = FALSE, message = FALSE}
+
+################# bring in qa/qc physical data #################################
+PhysData <-read_csv("R_write/LT_phys_qc_20260512.csv")
+
+############# load previously published QA/QC'd data to eventually bind with new data #############
+prevpub <- read_csv("R_write/Ichthyo/Ichthyo_data_20241209.csv")
+full <- read_csv("R_write/IchFullData1998-2022.csv")
+noted <- read_csv("R_write/IchSamplingQAQC_ Notated_2024-10-18.csv")
+
+###### load newest sample and catch data #########
+samp <- read_csv("ichthyo data/IchSampDataExcel_20260429.csv", skip =1)
+lab23 <- read_csv("ichthyo data/IchLabExcelData_20260429.csv", skip =1)
+lab24 <- read_csv("ichthyo data/Ich_20240108-20240617.csv")
+
+
+
+########### species codes and crosswalk ###########
+IEPFish <- read_csv("ichthyo data/IEP FISH CODE.csv")
+Species <- read_csv("ichthyo data/TblLarvalLookUpV2.csv")
+
+######## Bring in Inundation data and Water Year type Data ###################
+wy <- read_csv("WaterYearType_CDEC.csv") 
+inundation <- read_csv("Yolo_Bypass_Inundation_1998-2024.csv")
+
+```
+
+
+3.  Rename some columns and drop any unnecessary columns
+```{r filter, results = FALSE, message = FALSE, warning = FALSE}
+
+Species <- Species %>%
+  rename (SpeciesCode = "Code",
+          CommonName = "Species",
+          ScientificName = "Scientific Name")
+
+IEPFish <- IEPFish %>%
+  select(-c("...5":"...17"))
+
+lab23 <- lab23 %>% 
+    rename(Program = 'Measuring program short name',
+         Date = 'Sampling Event Date',
+         Time = 'Sampling Event Time',
+         Station = 'Sampling Area Number',
+         SamplingNumber = 'Sampling Event Number',
+         SampleID = 'Sample ID',
+         OrganismType = 'Observation Type Short Name',
+         OrganismGroup = 'Attribute',
+         ScientificName = 'Observable',
+         TotalCountSpecies = 'Value...10',
+         TL = 'Value...11',
+         FL = 'Value...12',
+         LifeStage = 'Value...13',
+         LarvalLifeStage = '...14',) %>%
+  filter(!is.na(Program)) %>%
+  select(-c(SamplingNumber, SampleID, Program, OrganismType, OrganismGroup))
+
+lab24 <- lab24 %>% 
+    select(-c(measuring_program, sam_code, short_name)) %>% 
+  rename(Date = date,
+         Time = time,
+         Station = station,
+         SampleID = sample_id,
+         Attribute = attribute,
+         ScientificName = observable,
+         TotalCountSpecies = count,
+         LifeStageAbb = life,
+         LarvalLifeStage = larval_life_stage)
+
+PhysData <- PhysData %>%
+  select(-c(MeterSetTime, FlowMeterStart, FlowMeterEnd, FlowMeterSpeed, ConditionCode))
+#these flow meter values relate to drift data, not ichthyo
+
+samp2<- samp %>% 
+    rename(Program = 'Measuring program short name',
+         Date = 'Sampling Event Date',
+         Time = 'Sampling Event Time',
+         Station = 'Sampling Area Number',
+         SamplingNumber = 'Sampling Event Number',
+         ConditionCode = 'Condition Code',
+         SamplingAltered = 'Sampling Altered',
+         MeterSetTime = 'Set Time',
+         FlowMeterStart = 'Flow Meter Start',
+         FlowMeterEnd = 'Flow Meter End',
+         FlowMeterSpeed = 'Flow Meter Speed',
+         EnteredBy = 'Entered by',
+         QAQCBy = "QAQC'd by",
+         FieldCommentsExcel = 'Field Comments',
+         LabComments = 'Lab Comments',
+         MeshSize = 'Observation Area Name',
+         Observation = 'Observation Area Number',
+         SpotNumber = 'Spot Number',
+         SpotCode = 'Spot Code (original/duplicate)') %>% 
+  select(-c(Program, SpotCode, SpotNumber, EnteredBy, QAQCBy, SamplingNumber)) %>% 
+  add_column(TowLocation = "Center", .after = "FlowMeterSpeed")
+#adding a tow location column to match prior access data since there were some special studies where the location varied
+
+SpeciesUpdate <- Species %>%
+  add_row(SpeciesCode = "UNSS" , CommonName = "silverside", ScientificName = "Menidia sp.") %>%
+  add_row(SpeciesCode = "POM", CommonName = "Unid Crappie", ScientificName = "Pomoxis sp.") %>%
+  add_row(SpeciesCode = "RAIKIL", CommonName = "Rainwater Killifish", ScientificName = "Lucania parva") %>%
+  add_row(SpeciesCode = "KLF", CommonName = "Killifish", ScientificName = "Cyprinodontidae spp.")
+
+# removing TSE - threadfin shad eggs and ASE american shad eggs in this version 
+# since it does not appear contractor has made a comment re: eggs
+# also the "animal tissue, baby clam, etc" is removed since those NA don't match
+# correctly when tied to the excel data
+SpeciesUpdate2 <- SpeciesUpdate %>%
+  filter(!is.na(ScientificName)) %>%
+  filter(SpeciesCode != "TSE") %>%
+  filter(SpeciesCode != "ASE") %>% 
+  filter(SpeciesCode != "CHNF") %>% 
+  filter(SpeciesCode != "CHNA") %>%
+  filter(SpeciesCode != "CHNL") %>%
+  filter(SpeciesCode != "CHNM") %>%
+  filter(SpeciesCode != "CHNS") %>%
+  filter(SpeciesCode != "CHNT") %>%
+  filter(SpeciesCode != "CHNW")
+
+
+#look at structure of each df before joining/binding
+str(full)
+str(lab23)
+str(lab24)
+str(PhysData)
+str(samp2)
+str(SpeciesUpdate2)
+
+
+```
+
+
+```{r}
+lab23$Date<-as.Date(lab23$Date,"%m/%d/%Y")
+lab23$Year <- year(lab23$Date)
+lab23$Month <- month(lab23$Date)
+mymonths <- c("Jan","Feb","Mar",
+              "Apr","May","Jun",
+              "Jul","Aug","Sep",
+              "Oct","Nov","Dec")
+lab23$MonthAbb <- mymonths[ lab23$Month ]
+lab23$Datetime = paste(lab23$Date, lab23$Time)
+lab23$Datetime <- ymd_hm(lab23$Datetime)
+lab23$Time <- strptime(lab23$Time, format = "%H:%M", tz = "") %>%
+  strftime(lab23$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs"))
+lab23$Time <- hms::as_hms(lab23$Time)
+
+lab24$Date<-as.Date(lab24$Date,"%m/%d/%Y")
+lab24$Year <- year(lab24$Date)
+lab24$Month <- month(lab24$Date)
+lab24$MonthAbb <- mymonths[ lab24$Month ]
+lab24$Datetime = paste(lab24$Date, lab24$Time)
+lab24$Datetime <- ymd_hms(lab24$Datetime)
+lab24$Time <- strptime(lab24$Time, format = "%H:%M", tz = "") %>%
+  strftime(lab24$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs"))
+lab24$Time <- hms::as_hms(lab24$Time)
+
+lab24ed <- lab24 %>% 
+  rename(TL = total_length,
+         FL = fork_length,
+         LifeStage = LifeStageAbb) %>% 
+  mutate(FL = as.numeric(FL),
+         TL = as.numeric(TL),
+         TotalCountSpecies = as.numeric(TotalCountSpecies)) %>% 
+  select(-(SampleID))
+
+lab23ed <- lab23 %>% 
+    mutate(FL = as.numeric(FL),
+         TL = as.numeric(TL),
+         TotalCountSpecies = as.numeric(TotalCountSpecies))
+
+str(lab23)
+str(lab24ed)
+
+labdata <- bind_rows(lab23ed, lab24ed) %>% 
+  filter(year(Date) > 2022)
+
+labdata$ScientificName <- str_replace_all(labdata$ScientificName, "Menidia berylina", "Menidia beryllina")
+
+samp2$Date<-as.Date(samp2$Date,"%m/%d/%Y")
+samp2$Year <- year(samp2$Date)
+samp2$Month <- month(samp2$Date)
+samp2$MonthAbb <- mymonths[ samp2$Month ]
+samp2$Datetime = paste(samp2$Date, samp2$Time)
+samp2$Datetime <- ymd_hms(samp2$Datetime)
+samp2$Time <- strptime(samp2$Time, format = "%H:%M", tz = "") %>%
+  strftime(samp2$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,
+           digits = getOption("digits.secs"))
+samp2$Time <- hms::as_hms(samp2$Time)
+
+sampcatch <- left_join(labdata, samp2) %>% 
+  mutate(event_id = paste0(Station, "_", Datetime)) %>% 
+  relocate(event_id)
+
+phys <- PhysData %>% 
+  filter(Station == "STTD") %>% 
+  filter(MonthAbb != "Jul") %>% 
+  filter(MonthAbb != "Aug") %>% 
+  filter(MonthAbb != "Sep") %>%
+  filter(MonthAbb != "Oct") %>% 
+  filter(MonthAbb != "Nov") %>% 
+  filter(MonthAbb != "Dec")
+  
+
+
+sampcatchphys <- left_join(phys, sampcatch)
+
+sampcatchspecies <- left_join(sampcatchphys, SpeciesUpdate2)
+
+fulldata <- sampcatchspecies %>% 
+   relocate(event_id, Datetime, Date, Time, Station, YSI, WeatherCode, Tide, FlowDirection,
+           ConditionCode, VegetationRank, MicrocystisVisualRank, WaterTemperature, Secchi, Conductivity, SpCnd, pH, DO, Turbidity, MeterSetTime, FlowMeterSpeed, FlowMeterStart, FlowMeterEnd, TowLocation)
+
+
+```
+
+Narrow down to unique samples
+```{r}
+sampUnique <- fulldata %>%
+  unique() %>%
+  arrange(Datetime)
+
+samp_catch_physMerge <- fulldata %>%
+  mutate(WY = ifelse(Month >9, Year + 1, Year)) %>%
+  left_join(wy, by = "WY") %>%
+  select(-c(Index, WYType)) %>%
+  mutate(Flowdiff = abs(FlowMeterEnd-FlowMeterStart))%>%
+  select(-c(TotalCountSpecies)) %>%
+  arrange(Datetime)
+```
+
+## QAQC 
+
+* QC Flags: 0 = no issues,no comments, blank/1 = Comment but deemed Acceptable/ 2 = Suspect/ 3 = Highly Suspect
+* Flag_SAMP: Sampling issues
+* Flag_LAB: Lab issues
+* Flag_FM: Flowmeter
+* Flag_CPUE: CPUE
+
+### QAQC Sampling and Lab issues
+
+12. Export sampling table
+13. Look at field sampling comments
+14. Flag comments reflecting poor data quality (Flag_SAMP)
+15. Add comment about what was flagged
+    * FM if issue with flowmeter
+    * FMMISSING if lacking flowmeter values
+    * SAMP for other sampling issues 
+    * Leave blank if no issues
+16. Look at lab comments and flag if poor data quality
+17. Add Comment_LAB
+    * LAB if lab issues (e.g. unable to meet meso or microtally)
+    * Leave blank if no issues
+
+* This part is manual. Think about how to make this codeable, change our condition code flags or add a flag as part of data entry? 
+* The following section creates blank columns before creating the csv to manually filter through comments and add appropriate notation before reading the file back in at step 18
+
+```{r}
+
+#find duplicated, ensure only looking at each individual event id but including comment extra to ensure no important comment is missed
+SamplingQAQC <- fulldata[duplicated(fulldata$event_id) == FALSE,c("event_id", "Datetime","Station","ConditionCode","MeterSetTime","FlowMeterSpeed","FlowMeterStart", "FlowMeterEnd", "TowLocation","SamplingAltered","FieldComments", "LabComments")] %>% 
+  arrange(Datetime)
+
+
+SamplingQAQC$Flag_SAMP <-  ifelse(is.na(SamplingQAQC$FieldComments), 0, "")
+SamplingQAQC$Comment_SAMP <-""
+SamplingQAQC$Flag_LAB <- ifelse(is.na(SamplingQAQC$LabComments), 0, "")
+SamplingQAQC$Comment_LAB <- ""
+today <- today()
+write.csv(SamplingQAQC, paste("R_write/IchSamplingQAQC_",today, ".csv"))
+
+
+```
+
