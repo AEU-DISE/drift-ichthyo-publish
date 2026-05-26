@@ -155,7 +155,7 @@ PlotVars <- function(data,y) {
 
 ```{r load, results = FALSE, warning = FALSE, message = FALSE}
 
-phys <- read_csv("drift data/TblPhysicalDataAccess.csv")
+phys <- read_csv("drift data/archive/TblPhysicalDataAccess.csv")
 phys2 <- read_csv("drift data/DriftSampExcelData_20250820.csv", skip=1)
 WQ <- read_csv("drift data/LTWQ2020onward_20250818.csv", skip=1)
 

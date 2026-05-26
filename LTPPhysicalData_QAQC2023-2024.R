@@ -110,7 +110,7 @@ PlotVars <- function(data,y) {
 }
 
 #read in most recent physical and water quality data from excel to merge with previous years qc'd data
-phys <- read_csv("drift data/DriftSampExcelData_20260429.csv", skip=1)
+phys <- read_csv("drift data/DriftSampExcelData_20260512.csv", skip=1)
 WQ <- read_csv("drift data/LTWQ2020onward_20260429.csv", skip=1)
 
 phys2 <- phys %>%
@@ -172,12 +172,15 @@ WQ <- WQ %>%
 phys3 <- phys2 %>% mutate(Datetime = paste(Date, Time, sep = " "))
 WQ <- WQ %>% mutate(Datetime = paste(Date, Time, sep = ""))
 
+
+str(phys3)
+str(WQ)
 #filter stations only for ybfmp lt (where drift is collected)
 WQ2 <- WQ %>%
   filter(Station == "STTD" | Station == "SHR")
 
 #additional date time format changes
-phys3$Datetime <- mdy_hms(phys3$Datetime)
+phys3$Datetime <- mdy_hm(phys3$Datetime)
 phys3$Date<- mdy(phys3$Date)
 phys3$Time <- strptime(phys3$Time, format = "%H:%M", tz = "") %>%
   strftime(phys3$Time, format = "%H:%M:%S", tz = "", usetz = FALSE,

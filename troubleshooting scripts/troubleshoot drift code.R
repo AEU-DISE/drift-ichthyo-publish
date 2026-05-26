@@ -505,3 +505,37 @@ print(phys_samp$Datetime)
 print(unique(catch2$Datetime))
 
 OlsonNames()
+
+########################################################
+
+Yolo_con <- DBI::dbConnect(drv=odbc::odbc(),                                        #connects to local access database using the location and driver info below
+                           Driver="Microsoft Access Driver (*.mdb, *.accdb)",      #Driver information, may need to install this on your local machine if it is missing
+                           Dbq="C:/Users/lvance/Desktop/LowerTrophicSampling_Yolo_DB_07152020_WORKING.accdb;")
+
+catch <- DBI::dbReadTable(Yolo_con, "TblInvertCatchData")
+tax <- DBI::dbReadTable(Yolo_con, "TblInvertsLookUpV2")
+inverts <- DBI::dbReadTable(Yolo_con, "TblInvertebrates")
+
+
+DBI::dbDisconnect(Yolo_con)
+#organism ids duplicated: 129 and 132, 7 and 154, 28 and 120, 29 and 146
+
+duplicate1 <- catch %>% 
+  filter(OrganismID == 146| OrganismID == 29)
+
+duplicate2 <- catch %>% 
+  filter(OrganismID == 129 | OrganismID == 132)
+
+duplicate3 <- catch %>% 
+  filter(OrganismID == 7 | OrganismID == 154)
+
+duplicate4 <- catch %>% 
+  filter(OrganismID == 28 | OrganismID == 120)
+
+dup1 <- left_join(duplicate1, tax, by = "OrganismID")
+dup2 <- left_join(duplicate2, tax, by = "OrganismID")
+dup3 <- left_join(duplicate3, tax, by = "OrganismID")
+dup4 <- left_join(duplicate4, tax, by = "OrganismID")
+
+alldup <- bind_rows(dup1, dup2, dup3, dup4)
+write.csv(alldup, "C:/Users/lvance/Desktop/driftdupsearch.csv")

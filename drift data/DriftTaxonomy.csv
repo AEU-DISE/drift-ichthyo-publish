@@ -4,7 +4,7 @@ Animalia,Annelida,,Clitellata,Hirudinea,Euhirudinea,,Rhynchobdellida,,,,Glossiph
 Animalia,Annelida,,Clitellata,Oligochaeta,,,Enchytraeida,,,,Enchytraeidae,,,Enchytraeidae,2,Enchytraeidae,Family
 Animalia,Annelida,,Clitellata,Oligochaeta,,,Opisthopora,Lumbricina,,,,,,Lumbricina,3,Lumbricina,Suborder
 Animalia,Annelida,,Clitellata,Oligochaeta,,,Tubificida,,,,Naididae,,,Naididae,4,Naididae,Family
-Animalia,Arthropoda,Crustacea,Hexanauplia,Copepoda,Neocopepoda,Podoplea,Cyclopoida,,,,,,,Cyclopoid,7,Cyclopoida,Order
+Animalia,Annelida,,,Oligochaeta,,,Haplotaxida,,,,Sparganophilidae,,,Sparganophilidae,6,Sparganophilidae,Family
 Animalia,Annelida,Aclitellata,Polychaeta,Palpata,,,Aciculata,Phyllodocida,,,Nereididae,,,Nereididae,7,Nereididae,Family
 Animalia,Annelida,Aclitellata,Polychaeta,Palpata,,,Canalipalpata,Sabellida,,,Sabellidae,,,Sabellidae,8,Sabellidae,Family
 Animalia,Arthropoda,Crustacea,Malacostraca,Eumalacostraca,,Peracarida,Amphipoda,Gammaridea,,,Corophiidae,,,Corophiidae,9,Corophiidae,Family
@@ -67,10 +67,12 @@ Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Hymenoptera,,,,,,,Hymen
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Psocoptera,,,,,,,Psocoptera,67,Psocoptera,Order
 Animalia,Arthropoda,Hexapoda,Insecta,,,,Collembola,,,,,,,Collembola,68,Collembola,Order
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Dermaptera,,,,,,,Dermaptera,69,Dermaptera,Order
+Animalia,Arthropoda,,Arachnida,,,,Araneae,,,,Diplura,,,Diplura,70,Diplura,Family
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Hemiptera,,,,,,,Hemiptera,71,Hemiptera,Order
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Isoptera,,,,,,,Isoptera,72,Isoptera,Order
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Lepidoptera,,,,,,,Lepidoptera,73,Lepidoptera,Order
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,Neuropterida,Neuroptera,,,,,,,Neuroptera,74,Neuroptera,Order
+Animalia,Arthropoda,,Arachnida,,,,Opioliones,,,,Phalangiidae,,,Phalangiidae,75,Phalangiidae,Family
 Animalia,Arthropoda,Hexapoda,Insecta,,,,Ephemeroptera,,,,Ephemeridae,,,Ephemeridae,76,Ephemeridae,Family
 Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Hygrobatidae,,,Hygrobatidae,77,Hygrobatidae,Family
 Animalia,Arthropoda,Hexapoda,Insecta,,,,Ephemeroptera,Furcatergalia,Pannota,Ephemerelloidea,Tricorythidae,,,Tricorythidae,78,Tricorythidae,Family
@@ -112,7 +114,7 @@ Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Coleoptera,Polyphaga,,,
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Coleoptera,Polyphaga,,,Elmidae,,,Elmidae,117,Elmidae,Family
 Animalia,Arthropoda,Crustacea,Ostracoda,,,,,,,,,,,Ostracod,118,Ostracoda,Class
 Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Limnesiidae,,,Limnesiidae,119,Limnesiidae,Family
-Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Lebertiidae,,,Lebertiidae,120,Lebertiidae,Family
+Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,,,,,,,,Acariformes,120,Acariforms,Superorder
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Coleoptera,Polyphaga,,,Ptilodactylidae,,,Ptilodactylidae,121,Ptilodactylidae,Family
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,Neoptera,,Plecoptera,,,,Perlodidae,,,Perlodidae,122,Perlodidae,Family
 Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Pionidae,,,Pionidae,123,Pionidae,Family
@@ -121,7 +123,6 @@ Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,,Oribatei,,,,,,Orib
 Animalia,Mollusca,,Gastropoda,,,,,,,,,,,Gastropoda,126,Gastropoda,Class
 Animalia,Mollusca,,Gastropoda,Caenogastropoda,,,Littorinimorpha,,,Truncatelloidea,Hydrobiidae,,,Hydrobiidae,127,Hydrobiidae,Family
 Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Mideopsidae,,,Mideopsidae,128,Mideopsidae,Family
-Animalia,Arthropoda,Hexapoda,Insecta,,,,Archaeognatha,,,,,,,Archaeognatha,129,Archaeognatha,Order
 Animalia,Nematoda,,,,,,,,,,,,,Nematoda,130,Nematoda,Phylum
 Animalia,Annelida,,Clitellata,Hirudinea,,,,,,,,,,Leech,131,Hirudinida,Subclass
 Animalia,Arthropoda,,Insecta,,,,Archaeognatha,,,,,,,Archaeognatha,132,Archaeognatha,Order
@@ -135,7 +136,7 @@ Animalia,Mollusca,,Bivalvia,Heterodonta,,,Veneroida,,,Corbiculoidea,Sphaeriidae,
 Animalia,Arthropoda,Chelicerata,Arachnida,,,,Opiliones,,,,,,,Opiliones,143,Opiliones,Order
 Animalia,Arthropoda,Hexapoda,Insecta,,,,Ephemeroptera,,,,,,,Ephemerpotera,144,Ephemeroptera,Order
 Animalia,Chordata,Vertebrata,Actinopterygii,,,,Cypriniformes,,,,Catostomidae,,,Catostomidae,145,Catostomidae,Family
-Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,Sperchontidae,,,Sperchontidae,146,Sperchontidae,Family
+Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Acariformes,Trombidiformes,,,,,,,Trombidiformes,146,Trombidiformes,Order
 Animalia,Chordata,Vertebrata,Actinopterygii,,,,Scorpaeniformes,Cottoidei,,,Cottidae,,,Unidentified Sculpin,148,Cottidae,Family
 Animalia,Chordata,Vertebrata,Actinopterygii,,,,Clupeiformes,Clupeoidei,,,Clupeidae,,,Clupeidae,149,Clupeidae,Family
 Animalia,Chordata,Vertebrata,Actinopterygii,,,,Perciformes,Gobioidei,,,Gobiidae,,,Unidentified goby,150,Gobiidae,Family
@@ -178,3 +179,27 @@ Animalia,Arthropoda,Crustacea,Malacostraca,Eumalacostraca,,Peracarida,Tanaidacea
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,,,Diptera,Brachycera,Muscomorpha,Platypezoidea,Phoridae,,,Phoridae,192,Phoridae,Family
 Animalia,Arthropoda,Hexapoda,Insecta,Pterygota,,,Hemiptera,Heteroptera,Gerromorpha,,Mesoveliidae,,,Mesoveliidae,193,Mesoveliidae,Family
 unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,unidentified,Unidentified,9999,Unidentified,unidentified
+Animalia,Mollusca,,Gastropoda,,,,Littorinimorpha,,,,Amnicolidae,,,,194,Amnicolidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hymenoptera,,,,Adrenidae,,,,195,Andrenidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hemiptera,Sternorrhyncha,,Aphidoidea,Aphididae,,,,196,Aphididae,Family
+Animalia,Mollusca,,,,,,,,,,,,,,197,Bivalvia,
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hymenoptera,,,Ichneumonoidea,Braconidae,,,,198,Braconidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Diptera,,Bibionmorpha,Sciaroidea,Cecidomyiidae,,,,199,Cecidomyiidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Plecoptera,,,Perloidea,Chloroperlidae,,,,200,Chloroperlidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hemiptera,Auchenorrhyncha,Cicadomorpha,Membracoidea,Cicadellidae,,,,201,Cicadellidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Lepidoptera,,,Pyraloidea,Crambidae,,,,202,Crambidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Coleoptera,Polyphaga,,Curclionoidea,Curculionidae,,,,203,Curculionidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hymenoptera,,,Formicoidea,Formicidae,,,,204,Formicidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,,,,,,,,,205,Insecta,Class
+Animalia,Arthropoda,Chelicerata,Arachnida,Acari,,Parasitiformes,Ixodida,,,,,,,,206,Ixodida,Order
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hemiptera,Heteroptera,Pentatomomorpha,Lygaeoidea,Lygaeidae,,,,207,Lygaeidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Mantodea,,,,,,,,208,Mantodea,Order
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Thysanoptera,,,,Phlaeothripidae,,,,209,Phlaeothripidae,Family
+Animalia,Arthropoda,Hexapoda,Colembola,,,,Poduromorpha,,,,Poduridae,,,,210,Poduridae,Family
+Animalia,Arthropoda,Hexapoda,Entognatha,,,,Protura,,,,,,,,211,Protura,Order
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hymenoptera,,,Chalcidoidea,Pteromalidae,,,,212,Pteromalidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Coleoptera,Polyphaga,,Staphylinoidea,Ptiliidae,,,,213,Ptiliidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Hemiptera,Heteroptera,Cimicomorpha,,Reduviidae,,,,214,Reduviidae,Family
+Animalia,Arthropoda,Chelicerata,Arachnida,,,,Araneae,,Araneomorphae,,Salticidae,,,,215,Salticidae,Family
+Animalia,Arthropoda,Hexapoda,Insecta,,,,Diptera,,Bibionomorpha,Sciaroidea,Sciaridae,,,,216,Sciaridae,Family
+Animalia,Mollusca,,Gastropoda,,,,Stylommatophora,Helicina,Succineoidei,Succineoidea,Succineidae,,,,217,Succineidae,Family
