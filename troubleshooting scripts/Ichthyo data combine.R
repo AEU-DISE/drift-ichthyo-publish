@@ -1,3 +1,35 @@
+
+#why is everything not matching correctly 
+
+sampcatch <- left_join(labupdate2020on, sampupdate, (by = "Date")) %>% 
+  relocate(Time.y, .after = "Time.x") %>% 
+  relocate(Datetime.x, Datetime.y) %>% 
+  relocate(Station.y, .after = "Station.x")
+
+%>% 
+  mutate(event_id = paste0(Station, "_", Datetime)) %>% 
+  relocate(event_id)
+
+
+print(labupdate2020on$Date)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # main issue here is a few dates duplicating when combining the Access data and 
 # excel data in the end. 
 # 01-06-20 also loses the program and sampling number associated with WDL data
