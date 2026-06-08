@@ -1,0 +1,62 @@
+,event_id,Datetime,Station,ConditionCode,MeterSetTime,FlowMeterSpeed,FlowMeterStart,FlowMeterEnd,TowLocation,SamplingAltered,FieldComments,LabComments,Flag_SAMP,Comment_SAMP,Flag_LAB,Comment_LAB
+1,STTD_2019-04-22 09:58:00,4/22/2019 9:58,STTD,1,5,Regular,813200,826343,Center,NA,NA,43 myomeres,0,,1,LAB
+2,STTD_2019-05-06 09:53:00,5/6/2019 9:53,STTD,1,10,Low,835182,839100,Center,NA,NA,"~32 myomeres This larvae resembles Lepomis  & Pomoxis sp. Based on myomeres I will place it under Pomoxis, but pigmentation more in tuned with Lepomis. Time of year overlaps. So, will leave at Centrarchid for now. Will be vouchered",0,,1,LAB
+3,STTD_2019-05-20 10:10:00,5/20/2019 10:10,STTD,1,10,Low,825767,831600,Center,NA,NA,Similar to the one in sample 7976.9-2. D: 10/ A: 9,0,,1,LAB
+4,STTD_2019-06-03 09:22:00,6/3/2019 9:22,STTD,1,10,Low,815646,820900,Center,NA,NA,NA,0,,0,
+5,STTD_2019-06-17 10:15:00,6/17/2019 10:15,STTD,1,10,Low,795078,799516,Center,NA,NA,Smallest one damaged. Gut ripped,0,,1,LAB
+6,STTD_2019-07-01 09:27:00,7/1/2019 9:27,STTD,1,10,Low,784614,788700,Center,NA,NA,NA,0,,0,
+7,STTD_2019-07-15 09:23:00,7/15/2019 9:23,STTD,1,10,Low,774805,778700,Center,NA,NA,NA,0,,0,
+8,STTD_2020-01-06 10:19:00,1/6/2020 10:19,STTD,1,10,Low,656369,660000,Center,NA,NA,NA,0,,0,
+9,STTD_2020-01-27 09:41:00,1/27/2020 9:41,STTD,1,10,Low,646110,650000,Center,NA,NA,NA,0,,0,
+10,STTD_2020-02-10 10:24:00,2/10/2020 10:24,STTD,1,10,Low,636217,640000,Center,NA,NA,NA,0,,0,
+11,STTD_2020-02-24 09:47:00,2/24/2020 9:47,STTD,1,10,Low,626383,630000,Center,NA,NA,NA,0,,0,
+12,STTD_2020-03-10 09:51:00,3/10/2020 9:51,STTD,1,10,Low,612033,616000,Center,NA,NA,NA,0,,0,
+13,STTD_2021-04-27 09:33:00,4/27/2021 9:33,STTD,1,10,low,592000,587695,Center,NA,NA,"PreFlexion; 30/13 prepost myomeres, long preanal length approx 77%, but this might be due to tail-end shrinkage. VERY cyprinid in form. Pigment inconclusive. Too well-developed at size to be a Catostomid. Best left at Cyprinidae in the Sacramento R. system at this stage of development and condition.",0,,1,LAB
+14,STTD_2021-05-11 09:31:00,5/11/2021 9:31,STTD,1,10,Low,579048,582000,Center,NA,NA,PreFlexion; See previous taxon notes,0,,1,LAB
+15,STTD_2021-05-25 09:16:00,5/25/2021 9:16,STTD,1,10,Low,579020,575456,Center,NA,Lots of Straw Veg,PreFlexion; See previous taxon notes,1,SAMP,1,LAB
+16,STTD_2021-06-09 09:37:00,6/9/2021 9:37,STTD,1,10,low,575408,571958,Center,NA,Some veg got wrapped around flowmeter,PostFlexion; 45/10 prepost myomeres and short preanal length. Distinctly a Clupeid and total myomere count is diagnostic.,2,FM,1,LAB
+17,STTD_2021-06-22 09:17:00,6/22/2021 9:17,STTD,1,10,Low,571829,568363,Center,NA,NA,PreFlexion; See previous taxon notes. One damaged specimen ID based on total myomere count and apparent gut length.,0,,1,LAB
+18,STTD_2022-01-10 10:54:00,1/10/2022 10:54,STTD,1,5,Low,568296,566855,Center,NA,NA,NA,0,,0,
+19,STTD_2022-01-24 12:33:00,1/24/2022 12:33,STTD,1,10,Low,566705,563246,Center,NA,A lot of veg,Common distinct taxa in Yolo Bypass samples.,1,SAMP,1,LAB
+20,STTD_2022-02-07 10:17:00,2/7/2022 10:17,STTD,1,10,Low,563195,560285,Center,NA,NA,"Meristics consistent with M. berylina, which is a very common non-native silverside in Sacramento-San Joquin system. Prominent silver/dark stripe and scale cross-hatching is prominent, which generally distinguishes from other native more estuarine/marine topsmelt/jacksmelts.",0,,1,LAB
+21,STTD_2022-02-22 09:52:00,2/22/2022 9:52,STTD,1,10,Low,560152,556946,Center,N,NA,See previous taxon notes,0,,1,LAB
+22,STTD_2022-03-14 09:27:00,3/14/2022 9:27,STTD,2,5,Low,556647,555672,Center,Y,Paddled drift tow (boat ran out of battery),See previous taxon notes,1,SAMP,1,LAB
+23,STTD_2022-03-28 08:01:00,3/28/2022 8:01,STTD,1,10,Low,555660,552436,Center,N,NA,See previous taxon notes,0,,1,LAB
+24,STTD_2022-04-11 08:05:00,4/11/2022 8:05,STTD,1,10,Low,552345,549800,Center,Y,sampled from jonboat,See previous taxon notes,1,SAMP,1,LAB
+25,STTD_2022-04-25 08:07:00,4/25/2022 8:07,STTD,1,10,Low,549735,547868,Center,Y,NA,Distinct taxon in project.,0,,1,LAB
+26,STTD_2022-05-09 10:39:00,5/9/2022 10:39,STTD,1,10,Low,547826,544764,Center,Y,NA,Distinct taxon in project.,0,,1,LAB
+27,STTD_2022-05-23 10:12:00,5/23/2022 10:12,STTD,1,10,Low,544860,541730,Center,Y,towed from Jon boat,Total myomere count appears to be 38-40. Small size at hatching and being inland in freshwater plus total myomere count is diagnostic. Common taxon in this project.,1,SAMP,1,LAB
+28,STTD_2022-06-07 08:17:00,6/7/2022 8:17,STTD,1,10,Low,541600,537852,Center,N,NA,Low total myomere count of approx. 40 is distinguishes it from A. sapidissima at this inland site.,0,,1,LAB
+29,STTD_2022-06-21 08:09:00,6/21/2022 8:09,STTD,1,10,Low,537810,534969,Center,Y,"boat used, veg in sample",Low total myomere count of approx. 40 is distinguishes it from A. sapidissima at this inland site.,1,SAMP,1,LAB
+30,STTD_2023-01-03 11:00:00,1/3/2023 11:00,STTD,1,10,Low,524347,518337,Center,Y,Towed from jon boat (forward),N/A,1,SAMP,1,LAB
+31,STTD_2023-01-12 10:10:00,1/12/2023 10:10,STTD,1,5,Reg,522033,529156,Center,Y,Reduced sampling time to half.,N/A,1,SAMP,1,LAB
+32,STTD_2023-01-17 12:18:00,1/17/2023 12:18,STTD,1,5,Reg,529277,542378,Center,Y,NA,"O. mykiss (steelhead/rainbow) and O. tshawytscha (Chinook) most common salmonids in Sacramento system.  Parr marks approx equal to space btn parr marks, 13-14 dorsal fin rays, and 19 anal fin rays fits chinook better than steelhead. Also, the small size of these specimens is not consisistent with steelhead that would be expected to be larger outmigrating smolts if collected at Yolo Bypass. More likely outmigrating Chinook fry.  Note: both specimens have what appear to be clean straight clips of caudal fin, which would be odd for marking fish of this size. Maybe facility damage or clipped for genetic testing when collected at facility?",0,,1,LAB
+33,STTD_2023-01-24 10:28:00,1/24/2023 10:28,STTD,1,5,Reg,542612,559438,Center,Y,NA,N/A,0,,1,LAB
+34,STTD_2023-01-30 09:52:00,1/30/2023 9:52,STTD,1,5,Reg,559764,567743,Center,Y,NA,N/A,0,,1,LAB
+35,STTD_2023-02-09 11:01:00,2/9/2023 11:01,STTD,1,5,Low,567645,565522,Center,Y,NA,"Distinct taxon in project. IDd as YSL, but all specimens are tranistional late YSL and early PYSL.",0,,1,LAB
+36,STTD_2023-02-21 10:20:00,2/21/2023 10:20,STTD,1,10,Low,565319,562013,Center,N,NA,"Distinct taxon in project. IDd as YSL, but all specimens are tranistional late YSL and early PYSL.",0,,1,LAB
+37,STTD_2023-03-06 09:45:00,3/6/2023 9:45,STTD,1,10,Low,561893,557610,Center,N,NA,"Distinct taxon in project. IDd as YSL, but all specimens are tranistional late YSL and early PYSL.",0,,1,LAB
+38,STTD_2023-03-16 09:34:00,3/16/2023 9:34,STTD,NA,NA,NA,NA,NA,NA,Y,Reduced tow time 1/2. RSTR moved to side of channel & sampled on port side,NA,1,SAMP,0,
+39,STTD_2023-03-29 08:32:00,3/29/2023 8:32,STTD,1,10,Reg,560242,596407,Center,N,NA,N/A,0,,1,LAB
+40,STTD_2023-04-03 09:42:00,4/3/2023 9:42,STTD,1,10,Low,596418,579887,Center,N,NA,Distinct hypostom pigment.,0,,1,LAB
+41,STTD_2023-04-10 09:25:00,4/10/2023 9:25,STTD,1,10,Low,579693,570510,Center,N,NA,Distinct taxon in project.,0,,1,LAB
+42,STTD_2023-05-01 09:07:00,5/1/2023 9:07,STTD,1,10,Low,570348,566851,Center,N,NA,"63% PAL, 9 dors rays, 10 anal rays, apparent symmetrical caudal fin, small (terminial?) mouth, heavy pigment on occiput. Myomere counts appear to be approx  45 but somewhat obscured by pigment and development. Final ID based on total myomere count of 45 and pigmentation.  No caudal spot at length excludes blackfish and hitch and roach (as do other characters).",0,,1,LAB
+43,STTD_2023-05-15 08:12:00,5/15/2023 8:12,STTD,1,10,Low,566657,563067,Center,N,NA,Same taxon as in RC,0,,1,LAB
+44,STTD_2023-05-30 08:04:00,5/30/2023 8:04,STTD,1,10,Low,562833,559791,Center,N,NA,Distinct taxon in project.,0,,1,LAB
+45,STTD_2023-06-12 08:17:00,6/12/2023 8:17,STTD,1,10,Low,559631,557308,Center,N,NA,"Very small at development, long PAL, total myomere counts approx 44. Small size at yolk absorption excludes Alosa and Clupea.",0,,1,LAB
+46,STTD_2023-06-26 12:24:00,6/26/2023 12:24,STTD,1,10,Low,557248,552226,Center,N,NA,39 total myomeres is diagnostic,0,,1,LAB
+47,STTD_2024-01-08 09:19:00,1/8/2024 9:19,STTD,1,10,Low,944200,940677,Center,N,Towed from boat-FLD tide,N/A,1,SAMP,1,LAB
+48,STTD_2024-01-29 11:44:00,1/29/2024 11:44,STTD,1,10,Low,940600,934962,Center,N,NA,Distinct taxon in project,0,,1,LAB
+49,STTD_2024-02-06 09:58:00,2/6/2024 9:58,STTD,1,5,Low,934934,933265,Center,N,Reduced tow time - high turbidity. Used low flow rotor b/c best available data indicated ft/s < 3.0,Distinct taxon in project,1,SAMP,1,LAB
+50,STTD_2024-02-13 12:12:00,2/13/2024 12:12,STTD,1,5,Low,933224,923911,Center,Y,Halfed tows. Ft/sec on CDEC @ beginning of day < 2.8 ft/s,N/A,1,SAMP,1,LAB
+51,STTD_2024-02-20 09:53:00,2/20/2024 9:53,STTD,3,5,Low,923898,917942,Center,N,Halfed tows b/c of flow,N/A,1,SAMP,1,LAB
+52,STTD_2024-02-26 11:12:00,2/26/2024 11:12,STTD,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,,0,
+53,STTD_2024-03-04 09:39:00,3/4/2024 9:39,STTD,1,5,Low,917900,910220,Center,N,Halfed tows,Distinct taxon in project,1,SAMP,1,LAB
+54,STTD_2024-03-11 08:50:00,3/11/2024 8:50,STTD,1,5,Low,910222,901950,Center,N,Should probably be 'REG',Distinct taxon in project,2,FM,1,LAB
+55,STTD_2024-03-25 09:21:00,3/25/2024 9:21,STTD,1,10,Low,902000,893256,Center,N,NA,Distinct taxon in project,0,,1,LAB
+56,STTD_2024-04-08 09:07:00,4/8/2024 9:07,STTD,1,10,Low,893000,886227,Center,N,NA,Distinct taxon in project,0,,1,LAB
+57,STTD_2024-04-15 10:20:00,4/15/2024 10:20,STTD,1,10,Low,886205,881217,Center,N,Switched to Ebb tide,Distinct taxon in project,1,SAMP,1,LAB
+58,STTD_2024-05-06 09:14:00,5/6/2024 9:14,STTD,1,10,Low,881180,876350,Center,N,From trap,Uncertain taxon,1,SAMP,1,LAB
+59,STTD_2024-05-20 07:50:00,5/20/2024 7:50,STTD,1,10,Low,876340,872567,Center,N,NA,Approx 43 total myomeres distinguishes from A. sapidissima  in project,0,,1,LAB
+60,STTD_2024-06-03 08:25:00,6/3/2024 8:25,STTD,NA,NA,NA,NA,NA,NA,Y,Numbers on flowmeter sliding around: use larval net rotor for tow,NA,2,FM,0,
+61,STTD_2024-06-17 08:24:00,6/17/2024 8:24,STTD,1,10,Low,541222,537615,Center,N,NA,50+ total myomeres distinguishes from D.petenense in project,0,,1,LAB

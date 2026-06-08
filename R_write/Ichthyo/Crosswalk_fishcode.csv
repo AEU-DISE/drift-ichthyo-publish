@@ -12,14 +12,7 @@ CAR,NA,California Roach,Lavinia symmetricus
 C,COMCAR,Carp,Cyprinus carpio
 CHG,CHAGOB,Chameleon Goby,Tridentiger trigonocephalus
 CHC,CHACAT,Channel Catfish,Ictalurus punctatus
-CHNA,CHISAL,"Chinook Salmon, Adult",Oncorhynchus tshawytscha
-CHNF,CHISAL,"Chinook Salmon, Fall-Run",Oncorhynchus tshawytscha
-CHNL,CHISAL,"Chinook Salmon, Late-Fall-Run",Oncorhynchus tshawytscha
-CHNM,CHISAL,"Chinook Salmon, Marked (Dyed)",Oncorhynchus tshawytscha
-CHNS,CHISAL,"Chinook Salmon, Spring-Run",Oncorhynchus tshawytscha
-CHNT,CHISAL,"Chinook Salmon, Tagged",Oncorhynchus tshawytscha
 CHN,CHISAL,"Chinook Salmon, Unknown Race",Oncorhynchus tshawytscha
-CHNW,CHISAL,"Chinook Salmon, Winter-Run",Oncorhynchus tshawytscha
 DSM,DELSME,Delta Smelt,Hypomesus transpacificus
 FHM,FATMIN,Fathead Minnow,Pimephales promelas
 GF,GOLDFI,Gold Fish,Carassius auratus

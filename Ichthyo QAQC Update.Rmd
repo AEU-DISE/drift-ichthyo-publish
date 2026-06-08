@@ -148,8 +148,7 @@ SpeciesUpdate2 <- SpeciesUpdate %>%
 
 #look at structure of each df before joining/binding
 str(full)
-str(lab23)
-str(lab24)
+str(labupdate)
 str(PhysData)
 str(samp2)
 str(SpeciesUpdate2)
@@ -197,31 +196,32 @@ samp2$Time <- strptime(samp2$Time, format = "%H:%M", tz = "") %>%
 samp2$Time <- hms::as_hms(samp2$Time)
 
 labupdate2020on <- labupdateed %>% 
-  filter(year(Date) > 2019)
+  filter(Date > "2020-01-31") %>% 
+  arrange(Datetime)
 
 labupdate2019 <- labupdateed %>% 
-  filter(year(Date) == 2019)
+  filter(Date < "2020-01-31") %>% 
+  arrange(Datetime)
 
 phys2 <- Phys2 %>% 
   filter(Date > "2019-04-21" & Date < "2020-01-28") %>% 
   select(-c(MeterSetTime, FlowMeterStart, FlowMeterEnd, FlowMeterSpeed, ConditionCode)) %>% #flowmeter values relate to drift
   filter(Station == "STTD") %>% 
-  filter(MonthAbb != "Jul") %>% 
   filter(MonthAbb != "Aug") %>% 
   filter(MonthAbb != "Sep") %>%
   filter(MonthAbb != "Oct") %>% 
   filter(MonthAbb != "Nov") %>% 
   filter(MonthAbb != "Dec")
 
-phys3 <- Phys2 %>% 
-  filter(Date > "2019-12-31") %>% 
+phys3 <- Phys2 %>%
+  filter(Date > "2020-01-31") %>%
   select(-c(MeterSetTime, FlowMeterStart, FlowMeterEnd, FlowMeterSpeed, ConditionCode)) %>% #flowmeter values relate to drift
-  filter(Station == "STTD") %>% 
-  filter(MonthAbb != "Jul") %>% 
-  filter(MonthAbb != "Aug") %>% 
+  filter(Station == "STTD") %>%
+  filter(MonthAbb != "Jul") %>%
+  filter(MonthAbb != "Aug") %>%
   filter(MonthAbb != "Sep") %>%
-  filter(MonthAbb != "Oct") %>% 
-  filter(MonthAbb != "Nov") %>% 
+  filter(MonthAbb != "Oct") %>%
+  filter(MonthAbb != "Nov") %>%
   filter(MonthAbb != "Dec")
 
 sampphys <- left_join(phys2, SamplingData) %>% 
@@ -237,12 +237,13 @@ sampphys <- left_join(phys2, SamplingData) %>%
 
 #this takes care of the overlap in 2019 between access and excel for phys data and lab data 
 sampcatchphys <- left_join(sampphys, labupdate2019) %>% 
-  filter(year(Date) == 2019)
+  arrange(Datetime)
 
 #this takes care of 2020 onwards
 sampupdate <- samp2 %>% 
   filter(year(Date) < 2025) %>% 
-  select(-(LabComments))
+  select(-(LabComments)) %>% 
+  filter(Date > "2020-01-31")
 
 #this matches the 2020 onward lab data with sampling data
 sampcatch <- left_join(sampupdate, labupdate2020on) %>% 
@@ -263,38 +264,54 @@ phys <- PhysData %>%
 #this only includes 2023 and 2024
 sampcatchphys2 <- left_join(phys, sampcatch)
 
-#this is just for 4/22/2019 through end of 2019
-sampcatchspecies <- left_join(sampcatchphys, SpeciesUpdate2)
+#this is just for 4/22/2019 through jan 2020
+sampcatchspecies <- left_join(sampcatchphys, SpeciesUpdate2) %>% 
+    mutate(SpeciesCode = case_when(is.na(SpeciesCode) ~ "None", TRUE ~ SpeciesCode),
+         ScientificName = case_when(is.na(ScientificName) ~ "No Catch", TRUE ~ ScientificName),
+         CommonName = case_when(is.na(CommonName) ~ "No Catch", TRUE ~ CommonName))
 
 #this is only 2023 and 2024
-sampcatchspecies2 <- left_join(sampcatchphys2, SpeciesUpdate2)
+sampcatchspecies2 <- left_join(sampcatchphys2, SpeciesUpdate2) %>% 
+    mutate(SpeciesCode = case_when(is.na(SpeciesCode) ~ "None", TRUE ~ SpeciesCode),
+         ScientificName = case_when(is.na(ScientificName) ~ "No Catch", TRUE ~ ScientificName),
+         CommonName = case_when(is.na(CommonName) ~ "No Catch", TRUE ~ CommonName))
 
 #this is for 2020 to 2022
 sampcatchphys3 <- left_join(phys3, sampcatch)
 
-sampcatchspecies3 <- left_join(sampcatchphys3, SpeciesUpdate2)
+sampcatchspecies3 <- left_join(sampcatchphys3, SpeciesUpdate2) %>% 
+    mutate(SpeciesCode = case_when(is.na(SpeciesCode) ~ "None", TRUE ~ SpeciesCode),
+         ScientificName = case_when(is.na(ScientificName) ~ "No Catch", TRUE ~ ScientificName),
+         CommonName = case_when(is.na(CommonName) ~ "No Catch", TRUE ~ CommonName))
 
-#filter for only jan 2020?
-samp2020 <- sampcatch %>% 
-  filter(Date == "2020-01-06" | Date == "2020-01-27")
-
-phys2020 <- phys3 %>% 
-  filter(Date == "2020-01-06" | Date == "2020-01-27")
-
-jan2020 <- left_join(samp2020, phys2020)
 
 #now bind 2019, 2020 to 2022 and 2023 to 2024 all together for the updated dataset (including lab comments)
-allsampcatchspecies <- bind_rows(sampcatchspecies,sampcatchspecies2, sampcatchspecies3)
+allsampcatchspecies <- bind_rows(sampcatchspecies,sampcatchspecies2, sampcatchspecies3) %>% 
+  arrange(Datetime)
 ##find the 2 dates for 2020 and make sure they get added in 
+
+str(allsampcatchspecies)
 
 fulldata <- allsampcatchspecies %>% 
    relocate(event_id, Datetime, Date, Time, Station, YSI, WeatherCode, Tide, FlowDirection,
-           ConditionCode, VegetationRank, MicrocystisVisualRank, WaterTemperature, Secchi, Conductivity, SpCnd, pH, DO, Turbidity, MeterSetTime, FlowMeterSpeed, FlowMeterStart, FlowMeterEnd, TowLocation) %>% 
+           ConditionCode, VegetationRank, MicrocystisVisualRank, WaterTemperature, Secchi, Conductivity, SpCnd, pH, DO, Turbidity, MeterSetTime, FlowMeterSpeed, FlowMeterStart, FlowMeterEnd, TowLocation) %>%
+  select(-(FieldCommentsExcel)) %>% 
+  mutate(CountIndividual = case_when(TotalCountSpecies >= 1 ~ 1, TRUE ~ TotalCountSpecies)) %>%
+  relocate(CountIndividual, .after = TotalCountSpecies) %>%
+  group_by(event_id, PhysicalDataID, Datetime, Date, Time, Station, YSI, WeatherCode,Tide, MicrocystisVisualRank,
+           WaterTemperature, Secchi, Conductivity, SpCnd, pH, DO, Turbidity, FlowDirection, VegetationRank, ConditionCode, SamplingAltered,
+           FieldComments_WQ, Flag_PQC, Comment_PQC, DataCorrectionComments, Year, Month, MonthAbb,
+           MeterSetTime, FlowMeterStart, FlowMeterEnd, FlowMeterSpeed, TowLocation, MeshSize, FieldComments,
+          LabComments, SpeciesCode, ScientificName, CommonName, TL,
+           FL, LifeStage, LifeStageAbb, TotalCountSpecies, CountIndividual) %>%
+  summarise(Count = sum(CountIndividual)) %>% 
   arrange(Datetime)
+  
 
 #for notating qaqc comments later
 noted2 <- noted %>% 
   filter(Datetime < "4/22/2019 9:58")
+
 ```
 
 Narrow down to unique samples
@@ -308,8 +325,11 @@ samp_catch_physMerge <- fulldata %>%
   left_join(wy, by = "WY") %>%
   select(-c(Index, WYType)) %>%
   mutate(Flowdiff = abs(FlowMeterEnd-FlowMeterStart))%>%
-  select(-c(TotalCountSpecies)) %>%
+  ungroup() %>% 
+  select(-c(TotalCountSpecies, CountIndividual)) %>% 
   arrange(Datetime)
+
+
 ```
 
 ## QAQC 
@@ -352,34 +372,39 @@ SamplingQAQC$Comment_LAB <- ""
 today <- today()
 write.csv(SamplingQAQC, paste("R_write/IchSamplingQAQC_",today, ".csv"))
 
-
 ```
 
 
 Combine new data with previous data for outlier QAQC
 ```{r}
 
-fullich <- bind_rows(full, fulldata) %>% 
+#ensure that previous data has WY/flowdiff, etc calculated before joining
+full_prior <- full %>% 
+    mutate(WY = ifelse(Month >9, Year + 1, Year)) %>%
+  left_join(wy, by = "WY") %>%
+  select(-c(Index, WYType)) %>%
+  mutate(Flowdiff = abs(FlowMeterEnd-FlowMeterStart))%>%
+  select(-c(LarvalDataID, LarvalCatchID, CountIndividual, TotalCountSpecies)) %>%
+  arrange(Datetime)
+
+fullich <- bind_rows(full_prior, samp_catch_physMerge) %>% 
   arrange(Datetime)
 
 #write new csv to include full updated data
 write.csv(fullich, "ichthyo data/IchthyoplanktonData 1998-2024.csv")
-
-
-
 ```
 
 Now that the QAQC file is updated, read that file back in for the next steps
 ```{r}
-SamplingQAQC_fill <- read.csv("R_write/IchSamplingQAQC_.csv")
+SamplingQAQC_fill <- read.csv("R_write/IchSamplingQAQC_ 2026-06-08_Notated.csv")
 SamplingQAQC_fill_s <- SamplingQAQC_fill %>%
-  select(c(event_id, PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
+  select(c(event_id, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
 #bring in previous qaqc notated file as well
 SamplingQAQC_fill2 <- noted2
 SamplingQAQC_fill_s2 <- SamplingQAQC_fill2 %>%
   select(c(event_id, PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
 
-SamplingQAQC_fill_sfinal <- bind_rows(SamplingQAQC_fill_s, SamplingQAQC_fill_s2)
+SamplingQAQC_fill_sfinal <- bind_rows(SamplingQAQC_fill_s2, SamplingQAQC_fill_s)
 
 ```
 
@@ -409,7 +434,7 @@ inundation2a <- inundation %>%
          WY = ifelse(Month > 9, Year + 1, Year))
 
 # Modify sample table to include Flowdiff
-samp3 <-sampUnique %>%
+samp3 <-fullich %>%
   mutate(Flowdiff = abs(FlowMeterEnd-FlowMeterStart),
          Flowdiff_s = Flowdiff/MeterSetTime) 
 
@@ -468,7 +493,7 @@ inundation4$Inundation2[inundation4$Date=="1998-01-08"] <- "FALSE"
 inundation4$Inundation2[inundation4$Date=="1998-01-09"] <- "FALSE"
 inundation4$Inundation2[inundation4$Date=="1998-01-10"] <- "FALSE"
 
-samp_catch_phys <- left_join(samp_catch_physMerge, inundation4)
+samp_catch_phys <- left_join(fullich, inundation4)
 ```
 
 ##Flowmeter QA/QC
@@ -522,20 +547,20 @@ samp_catch_phys$Flowdiff[samp_catch_phys$event_id == "STTD_2015-04-30 08:16:00"]
 samp_catch_phys$FlowMeterEnd[samp_catch_phys$event_id == "SHR_2016-03-17 08:25:00"] <- 954818
 samp_catch_phys$Flowdiff[samp_catch_phys$event_id == "SHR_2016-03-17 08:25:00"] <- 954818-941900
 
-#comment on data sheet and confirmation with NI, 7/25/2012 STTD flowmeter value was recorded incorrectly, should match flowmeter for zoop
+# #comment on data sheet and confirmation with NI, 7/25/2012 STTD flowmeter value was recorded incorrectly, should match flowmeter for zoop
 samp_catch_phys$FlowMeterEnd[samp_catch_phys$event_id == "STTD_2012-07-25 10:11:00"] <- 899989
 samp_catch_phys$Flowdiff[samp_catch_phys$event_id == "STTD_2012-07-25 10:11:00"] <- 900000-899989
 
-# 1/24/2012 SHR appears to be correct numbers based on datasheet but flow diff very high
-# 1/23/2004 SHR appears to be correct numbers based on datasheet but flow diff very high
-# 2/16/1999 SHR appears to be correct numbers based on datasheet but flow diff very high
-
-#change the same flowmeter values in samp3
+# # 1/24/2012 SHR appears to be correct numbers based on datasheet but flow diff very high
+# # 1/23/2004 SHR appears to be correct numbers based on datasheet but flow diff very high
+# # 2/16/1999 SHR appears to be correct numbers based on datasheet but flow diff very high
+# 
+# #change the same flowmeter values in samp3
 samp3$Flowdiff[samp3$event_id == "STTD_2015-04-30 08:16:00"] <- 1000000-996009
 samp3$FlowMeterEnd[samp3$event_id == "SHR_2016-03-17 08:25:00"] <- 954818
 samp3$Flowdiff[samp3$event_id == "SHR_2016-03-17 08:25:00"] <- 954818-941900
 
-#comment on data sheet and confirmation with NI, 7/25/2012 STTD flowmeter value was recorded incorrectly, should match flowmeter for zoop
+# #comment on data sheet and confirmation with NI, 7/25/2012 STTD flowmeter value was recorded incorrectly, should match flowmeter for zoop
 samp3$FlowMeterEnd[samp3$event_id == "STTD_2012-07-25 10:11:00"] <- 899989
 samp3$Flowdiff[samp3$event_id == "STTD_2012-07-25 10:11:00"] <- 900000-899989
 
@@ -547,13 +572,11 @@ samp3$Flowdiff[samp3$event_id == "STTD_2012-07-25 10:11:00"] <- 900000-899989
   * Replace NA with blank
 ```{r}
 
-FM_Samp <- left_join(samp_catch_phys, SamplingQAQC_fill_s, by = "event_id") %>%
+FM_Samp <- left_join(samp_catch_phys, SamplingQAQC_fill_sfinal, by = "event_id") %>%
   mutate(Flag_SAMP = replace(Flag_SAMP, is.na(Flag_SAMP), "" ),
          Comment_SAMP = replace(Comment_SAMP, is.na(Comment_SAMP), ""),
          Flag_LAB = replace(Flag_LAB, is.na(Flag_LAB), ""),
-         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), "")) %>%
-  select(-c(PhysicalDataID.y))%>%
-  rename(PhysicalDataID = "PhysicalDataID.x")
+         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), ""))
 
 ```
 
