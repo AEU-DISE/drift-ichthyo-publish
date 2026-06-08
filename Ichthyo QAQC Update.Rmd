@@ -308,7 +308,7 @@ fulldata <- allsampcatchspecies %>%
   arrange(Datetime)
   
 
-#for notating qaqc comments later
+#for notating qaqc comments later - this will be adjusted in future publishing to account for distinction between previously published and newer lab data
 noted2 <- noted %>% 
   filter(Datetime < "4/22/2019 9:58")
 
@@ -377,7 +377,7 @@ write.csv(SamplingQAQC, paste("R_write/IchSamplingQAQC_",today, ".csv"))
 
 Combine new data with previous data for outlier QAQC
 ```{r}
-
+#this step is binding the previous publications data to the newest data for publishing
 #ensure that previous data has WY/flowdiff, etc calculated before joining
 full_prior <- full %>% 
     mutate(WY = ifelse(Month >9, Year + 1, Year)) %>%
@@ -399,7 +399,7 @@ Now that the QAQC file is updated, read that file back in for the next steps
 SamplingQAQC_fill <- read.csv("R_write/IchSamplingQAQC_ 2026-06-08_Notated.csv")
 SamplingQAQC_fill_s <- SamplingQAQC_fill %>%
   select(c(event_id, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
-#bring in previous qaqc notated file as well
+#bring in previous qaqc notated file as well to bind with newest data to ensure you have the full dataset
 SamplingQAQC_fill2 <- noted2
 SamplingQAQC_fill_s2 <- SamplingQAQC_fill2 %>%
   select(c(event_id, PhysicalDataID, Flag_SAMP, Comment_SAMP, Flag_LAB, Comment_LAB))
