@@ -352,7 +352,7 @@ samp_catch_physMergefinal <- sampcatchphysMergefinal %>%
 
 ## QAQC 
 
-* QC Flags: Blank = no issues/1 = Comment but deemed Acceptable/ 2 = Suspect/ 3 = Highly Suspect
+* QC Flags: 0 or Blank = no issues/1 = Comment but deemed Acceptable/ 2 = Suspect/ 3 = Highly Suspect
 * Flag_SAMP: Sampling issues
 * Flag_LAB: Lab issues
 * Flag_FM: Flowmeter
@@ -546,13 +546,13 @@ samp3$Flowdiff[samp3$event_id== "STTD_2023-06-26 12:24:00"] <- abs((999999-samp3
 ```
 
 16. Merge data with lab/sampling QAQC 
-    * Replace NA with blank
+    * Replace NA with 0
 ```{r}
 FM_Samp <- left_join(samp_catch_phys, SamplingQAQC_fill_sfinal, by = "event_id") %>%
-  mutate(Flag_SAMP = replace(Flag_SAMP, is.na(Flag_SAMP), "" ),
-         Comment_SAMP = replace(Comment_SAMP, is.na(Comment_SAMP), ""),
-         Flag_LAB = replace(Flag_LAB, is.na(Flag_LAB), ""),
-         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), "")) %>%
+  mutate(Flag_SAMP = replace(Flag_SAMP, is.na(Flag_SAMP), 0 ),
+         Comment_SAMP = replace(Comment_SAMP, is.na(Comment_SAMP), 0),
+         Flag_LAB = replace(Flag_LAB, is.na(Flag_LAB), 0),
+         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), 0)) %>%
   select(-c(PhysicalDataID.y))%>%
   rename(PhysicalDataID = "PhysicalDataID.x") %>%
   mutate(FlowMeterSpeed = replace(FlowMeterSpeed, FlowMeterSpeed == "Regular", "REGULAR"),
@@ -783,8 +783,8 @@ FlowmeterQAQC <- Flow.outlier %>%
   filter(!is.na(Flowdiff), Flow_modZ>=0.00000001) %>%
   mutate(Flag_FM = ifelse(Flow_Outlier=="Both" | Flowdiff < 200 | (Flowdiff >= 50000 & Inundation2 ==FALSE) | Flowdiff >= 70000 , 3, 
                           ifelse(Flow_Outlier %in% c("Tukey", "MAD") | Flowdiff < 1000, 2,
-                                 "")),
-         Comment_FM = ifelse(Flag_FM %in% c(2,3), "FM", ""),
+                                 "0")),
+         Comment_FM = ifelse(Flag_FM %in% c(2,3), "FM", "0"),
          FlowdiffAdj = ifelse(Flag_FM == 3 | Comment_SAMP == "FM", median.Flowdiff_s * SetTime, Flowdiff))
 
 ```
@@ -1001,8 +1001,8 @@ CPUE.adj.table %>%
 30. Add comment about what was flagged (Comment_CPUE = CPUE)
 ```{r}
 CPUEQAQC <- FlowQAQC_CPUE %>%
-  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "" ),
-         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", ""))
+  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "0" ),
+         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", "0"))
 ```
 
 31. Plot outliers
@@ -1031,8 +1031,8 @@ grid.arrange(outlier2a, outlier2b)
 32. Join taxa and clean up order of variables
 ```{r}
 CPUEQAQC <- FlowQAQC_CPUE %>%
-  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "" ),
-         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", ""))
+  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "0" ),
+         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", "0"))
 ```
 
 
@@ -1078,7 +1078,7 @@ inv_arrange <- inv_all %>%
 ```{r}
 empty_as_na <- function(x){
     if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
-    ifelse(as.character(x)!="", x, NA)
+    ifelse(as.character(x)!="", x, "0")
 }
 
 inv_final <- inv_arrange %>%

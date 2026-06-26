@@ -312,6 +312,11 @@ fulldata <- allsampcatchspecies %>%
 noted2 <- noted %>% 
   filter(Datetime < "4/22/2019 9:58")
 
+#adjust the previous publication to match updating lab comments - filter for dates before 4/22/2019
+full <- full %>% 
+  filter(Date < "2019-04-22") %>% 
+  arrange(Datetime)
+
 ```
 
 Narrow down to unique samples
@@ -503,6 +508,8 @@ samp_catch_phys <- left_join(fullich, inundation4)
 #make sure case matches for flowmeter speed
 samp_catch_phys$FlowMeterSpeed <- str_replace_all(samp_catch_phys$FlowMeterSpeed, "low", "Low")
 samp3$FlowMeterSpeed <- str_replace_all(samp3$FlowMeterSpeed, "low", "Low")
+samp_catch_phys$FlowMeterSpeed <- str_replace_all(samp_catch_phys$FlowMeterSpeed, "^Reg$", "Regular")
+samp3$FlowMeterSpeed <- str_replace_all(samp3$FlowMeterSpeed, "^Reg$", "Regular")
 
 # Histogram of values
 samp_catch_phys$Month <- ordered(samp_catch_phys$Month)
@@ -569,14 +576,14 @@ samp3$Flowdiff[samp3$event_id == "STTD_2012-07-25 10:11:00"] <- 900000-899989
 
 
 22. Merge data with lab/sampling QAQC 
-  * Replace NA with blank
+  * Replace NA with 0 (0 = no comment/no flag)
 ```{r}
 
 FM_Samp <- left_join(samp_catch_phys, SamplingQAQC_fill_sfinal, by = "event_id") %>%
-  mutate(Flag_SAMP = replace(Flag_SAMP, is.na(Flag_SAMP), "" ),
-         Comment_SAMP = replace(Comment_SAMP, is.na(Comment_SAMP), ""),
-         Flag_LAB = replace(Flag_LAB, is.na(Flag_LAB), ""),
-         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), ""))
+  mutate(Flag_SAMP = replace(Flag_SAMP, is.na(Flag_SAMP), 0 ),
+         Comment_SAMP = replace(Comment_SAMP, is.na(Comment_SAMP), 0),
+         Flag_LAB = replace(Flag_LAB, is.na(Flag_LAB), 0),
+         Comment_LAB = replace(Comment_LAB, is.na(Comment_LAB), 0))
 
 ```
 
@@ -663,6 +670,7 @@ Flow.outlier.STTD <- left_join(FM_Samp, Flow.sum.STTD) %>%
                                                                                            "None"))))
 
 Flow.outlier.STTD$FlowMeterSpeed <- str_replace_all(Flow.outlier.STTD$FlowMeterSpeed, "low", "Low")
+Flow.outlier.STTD$FlowMeterSpeed <- str_replace_all(Flow.outlier.STTD$FlowMeterSpeed, "^Reg$", "Regular")
 
 summary(factor(Flow.outlier.STTD$Flow_Outlier))
 
@@ -761,8 +769,8 @@ FlowmeterQAQC <- Flow.outlier %>%
   filter(!is.na(Flowdiff), Flow_modZ>=0.00000001) %>%
   mutate(Flag_FM = ifelse(Flow_Outlier=="Both" | Flowdiff < 200 | (Flowdiff >= 50000 & Inundation2 ==FALSE) | Flowdiff >= 70000 , 3, 
                           ifelse(Flow_Outlier %in% c("Tukey", "MAD") | Flowdiff < 1000, 2,
-                                 "")),
-         Comment_FM = ifelse(Flag_FM %in% c(2,3), "FM", ""),
+                                 "0")),
+         Comment_FM = ifelse(Flag_FM %in% c(2,3), "FM", "0"),
          FlowdiffAdj = ifelse(Flag_FM == 3 | Comment_SAMP == "FM", median.Flowdiff_s * MeterSetTime, Flowdiff))
 ```
 
@@ -978,11 +986,11 @@ CPUE.adj.table %>%
     * In this case, used plots to decide to flag CPUE values > 70 
 
 37. Add comment about what was flagged (Comment_CPUE = CPUE)
-
+0 = no flag, no comment
 ```{r}
 CPUEQAQC <- FlowQAQC_CPUE %>%
-  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "" ),
-         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", ""))
+  mutate(Flag_CPUE = ifelse(CPUEAdj>70, 2, "0" ),
+         Comment_CPUE = ifelse(CPUEAdj>70, "CPUE", "0"))
 ```
 
 38. Plot outliers
@@ -1037,7 +1045,7 @@ ich_select <- CPUEQAQC %>%
 ```{r}
 empty_as_na <- function(x){
   if("factor" %in% class(x)) x <- as.character(x) ## since ifelse wont work with factors
-  ifelse(as.character(x)!="", x, NA)
+  ifelse(as.character(x)!="", x, "0")
 }
 
 ich_final <- ich_select %>%
